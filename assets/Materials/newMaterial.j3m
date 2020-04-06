@@ -1,0 +1,14 @@
+Material My Material : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        DiffuseMap : "Common/MatDefs/SSAO/Textures/random.png"
+        NormalMap : "Common/Textures/MissingMaterial.png"
+        SpecularMap : "Common/Textures/MissingModel.png"
+        ParallaxMap : "Common/Textures/MissingTexture.png"
+        Ambient : 1.0 0.6 0.2 1.0
+        Diffuse : 0.0 0.6 1.0 1.0
+        Specular : 0.6 0.0 0.6 1.0
+        GlowColor : 0.0 0.4 0.0 1.0
+     }
+    AdditionalRenderState {
+    }
+}

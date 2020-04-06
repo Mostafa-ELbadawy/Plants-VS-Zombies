@@ -1,0 +1,15 @@
+# Blender MTL File: 'Dying.blend'
+# Material Count: 1
+
+newmtl Nightshade_MAT
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Kd 0.800000 0.800000 0.800000
+Ks 0.250000 0.250000 0.250000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Bump -bm 0.350042 F:\\JME Projects\\home\\app\\mixamo-mini\\tmp\\skins_1bcb88a2-ea5e-4631-8299-63b21e3f42a8.fbm\\Nightshade_normal.png
+map_Kd F:\\JME Projects\\home\\app\\mixamo-mini\\tmp\\skins_1bcb88a2-ea5e-4631-8299-63b21e3f42a8.fbm\\Nightshade_diffuse.png
+map_Ks F:\\JME Projects\\home\\app\\mixamo-mini\\tmp\\skins_1bcb88a2-ea5e-4631-8299-63b21e3f42a8.fbm\\Nightshade_specular.png

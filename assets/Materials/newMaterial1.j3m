@@ -1,0 +1,9 @@
+Material My Material : Common/MatDefs/Light/Lighting.j3md {
+     MaterialParameters {
+        ParallaxMap : "Common/Textures/MissingMaterial.png"
+        AlphaMap : "Common/Textures/MissingModel.png"
+        ColorRamp : "Common/Textures/MissingTexture.png"
+     }
+    AdditionalRenderState {
+    }
+}
