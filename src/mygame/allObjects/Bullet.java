@@ -27,7 +27,6 @@ public class Bullet {
     protected  Geometry node;
     
 
-   // Mustafa Elshamy was Here
     
     
 

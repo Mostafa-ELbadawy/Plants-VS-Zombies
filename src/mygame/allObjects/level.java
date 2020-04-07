@@ -28,6 +28,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
@@ -92,8 +93,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         timer = app.getTimer();
         this.app = app;
 
-/////
-        //inivar();
     }
 
     //////
@@ -119,19 +118,18 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         addzombie(1);
         /////////////////////////////////////////////////////////////////////////////////
 
-        //bulletAppState.setDebugEnabled(true);
+       // bulletAppState.setDebugEnabled(true);
         space.setGravity(Vector3f.ZERO);
         space.addCollisionListener(this);
 
         camera.setLocation(new Vector3f(10.465846f, 25.21445f, 5.6196184f));
         camera.setRotation(new Quaternion(0.0196439f, 0.843758f, -0.53620327f, 0.01313919f));
 
-        flyByCamera.setEnabled(false);
+    //    flyByCamera.setEnabled(false);
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
         pq = Generator.genrate(44);
-
-        printqueue();
+       // printqueue();
 /////////////////////////////////////////////////////////////////////////////////////////////
     }
 
@@ -158,7 +156,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
 
     public void moveAllZombies(float tpf) {
         for (int i = 0; i < zomb.size(); i++) {
-            zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space);
+            zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space, floor);
         }
 
     }
@@ -204,16 +202,31 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         if (is_valid(row, col)) {
             if (typ == 1) {
 
-                plan.add(new plant01(assetManager));
+                plan.add(new Grean_Plant(assetManager));
                 floor[row][col] = plan.getLast();
                 lvl.attachChild(plan.getLast().getNode());
                 space.addAll(plan.getLast().getNode());;
                 plan.getLast().phyControl.setEnabled(false);
                 plan.getLast().setRow(row);
+                 plan.getLast().setCol(col);
                 plan.getLast().getNode().setLocalTranslation(col * side + side / 2, 0, -side / 2 - side * row);
                 plan.getLast().phyControl.setEnabled(true);
                 hashingplant.put(plan.getLast().getNode(), plan.getLast());
-
+                 System.out.println("Green Plant");
+            }
+            else if(typ ==2)
+            {
+                 plan.add(new Potato(assetManager));
+                floor[row][col] = plan.getLast();
+                lvl.attachChild(plan.getLast().getNode());
+                space.addAll(plan.getLast().getNode());;
+                plan.getLast().phyControl.setEnabled(false);
+                plan.getLast().setRow(row);
+                 plan.getLast().setCol(col);
+                plan.getLast().getNode().setLocalTranslation(col * side + side / 2, 0, -side / 2 - side * row);
+                plan.getLast().phyControl.setEnabled(true);
+                hashingplant.put(plan.getLast().getNode(), plan.getLast());
+                System.out.println("Potato");
             }
         }
 
@@ -287,10 +300,14 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("one") && !keyPressed) {
-                co++;
-                co %= 5;
-                System.out.println("co=" + co);
-            } else if (name.equals("P") && !keyPressed) {
+            co=1;
+            }
+            else if (name.equals("two") && !keyPressed) {
+            co=2;
+            }
+            
+            else if (name.equals("P") && !keyPressed) {
+                addplant(2, new Vector3f(5, 0,-1));
                 for (int i = 0; i < 9; i++) {
                     if (is_valid(co, i)) {
                         addplant(1, new Vector3f(co * side, 0, side * i));
@@ -312,7 +329,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
                 addzombie(1);
             } else if (name.equals("add") && !keyPressed) {
                 Vector3f pos = getMousePos();
-                addplant(1, pos);
+                addplant(co, pos);
             }
         }
     };
@@ -357,8 +374,12 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
 
     private void initKeys() {
 
-        inputManager.addMapping("one", new KeyTrigger(KeyInput.KEY_O));
+        inputManager.addMapping("one", new KeyTrigger(KeyInput.KEY_G));
         inputManager.addListener(actionListener, "one");
+        
+        inputManager.addMapping("two", new KeyTrigger(KeyInput.KEY_B));
+        inputManager.addListener(actionListener, "two");
+        
 
         inputManager.addMapping("P", new KeyTrigger(KeyInput.KEY_P));
         inputManager.addListener(actionListener, "P");
@@ -373,7 +394,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
 
     private void initFloor() {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        //    mat.setColor("Color", ColorRGBA.Blue);
+            mat.setColor("Color", ColorRGBA.Green);
 
         Box floorBox = new Box(25, 0.25f, 25);
         Geometry floorGeometry = new Geometry("Floor", floorBox);

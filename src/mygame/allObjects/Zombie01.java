@@ -11,6 +11,7 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 
 import com.jme3.scene.Node;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.AmbientLight;
 
 /**
  *
@@ -30,7 +31,7 @@ private final AssetManager  assetManager;
             node=(Node)node.getChild(name);
             this.node=node;
         this.node.setName("zombie");
-            
+            this.node.addLight(new AmbientLight());
          phyControl=new RigidBodyControl(0);
         // phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);  
         

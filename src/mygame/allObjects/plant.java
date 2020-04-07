@@ -26,63 +26,32 @@ import java.util.LinkedList;
  *
  * @author DELL
  */
-public class plant {
+public abstract  class plant {
 
     private final AssetManager assetManager;
     private float health;
-    private float attackPower, attackSpeed, lastAttack;
     protected Node node;
     protected AnimControl control;
     protected AnimChannel channal;
     protected String name;
-    private int row;
+    private int row, col;
     public RigidBodyControl phyControl;
 
     public plant(AssetManager asset) {
         health = 100;
         this.assetManager = asset;
-        attackPower = 10;
-        attackSpeed = 3;
         node = null;
         name = null;
         row = 0;
-        lastAttack = -1;
+        col=0;
 
     }
 
-    public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
+    
+    public abstract void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) ;
 
-        CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 1, 0.05f), new Vector3f(1, 0, 0));
-
-        node.getParent().collideWith(sight, results);
-
-        boolean isAttack = false;
-        for (int i = 0; i < results.size(); i++) {
-            // For each hit, we know distance, impact point, name of geometry.
-
-            String hitName = results.getCollision(i).getGeometry().getName();
-            //    System.out.println("i= " + i + " name= " + hitName );
-
-            if (hitName.equals("Yaku_zombie1")) {
-                isAttack = true;
-                break;
-
-            }
-
-        }
-
-        //  System.out.println("///////////////////////////////////////////////////////");
-        if (isAttack) {
-            attack(timeNow, space, hashing);
-        } else {
-            idel();
-        }
-
-    }
-
-    private void idel() {
+    protected void idel() {
         if (channal != null) {
             if (channal.getAnimationName()==null||!channal.getAnimationName().equals("idel"))
             {
@@ -93,13 +62,6 @@ public class plant {
         } 
     }
 
-    public float getLastAttack() {
-        return lastAttack;
-    }
-
-    public void setLastAttack(float lastAttack) {
-        this.lastAttack = lastAttack;
-    }
 
     public RigidBodyControl getPhyControl() {
         return phyControl;
@@ -124,25 +86,7 @@ public class plant {
     public void setRow(int row) {
         this.row = row;
     }
-
-    public void attack(float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
-
-        if (timeNow - lastAttack >= attackSpeed) {
-
-            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Blue);
-
-            Bullet bullet = new Bullet(attackPower, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 1.5f, 0));
-
-            hashing.put(bullet.getNode(), bullet);
-            lastAttack = timeNow;
-
-            channal.setAnim("attacking");
-            channal.setLoopMode(LoopMode.DontLoop);
-
-        }
-
-    }
+   
     public void damage(float dam) {
         health -= dam;
     }
@@ -159,28 +103,20 @@ public class plant {
         this.health = health;
     }
 
-    public float getAttackPower() {
-        return attackPower;
-    }
-
-    public void setAttackPower(float attackPower) {
-        this.attackPower = attackPower;
-    }
-
-    public float getAttackSpeed() {
-        return attackSpeed;
-    }
-
-    public void setAttackSpeed(float attackSpeed) {
-        this.attackSpeed = attackSpeed;
-    }
-
     public Node getNode() {
         return node;
     }
 
     public void setNode(Node model) {
         this.node = model;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
     }
 
 }

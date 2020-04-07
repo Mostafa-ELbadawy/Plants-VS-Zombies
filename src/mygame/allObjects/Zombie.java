@@ -62,7 +62,7 @@ public class Zombie {
         this.name = name;
     }
 
-    public void setstatus(float tpf, LinkedList<plant> plan, HashMap<Node, plant> hashingplant, float timeNow, PhysicsSpace space) {
+    public void setstatus(float tpf, LinkedList<plant> plan, HashMap<Node, plant> hashingplant, float timeNow, PhysicsSpace space, plant[][] floor) {
 
         CollisionResults results = new CollisionResults();
 
@@ -83,7 +83,7 @@ public class Zombie {
                 if (timeNow - lastattack >= attackSpeed) {
                     lastattack = timeNow;
                     plant p = hashingplant.get(results.getCollision(i).getGeometry().getParent().getParent().getParent().getParent());
-                    attack(plan, space, p, hashingplant);
+                    attack(plan, space, p, hashingplant, floor);
 
                 }
                 return;
@@ -111,7 +111,7 @@ public class Zombie {
 
     }
 
-    public void attack(LinkedList<plant> plan, PhysicsSpace space, plant p, HashMap<Node, plant> hashingplant) {
+    public void attack(LinkedList<plant> plan, PhysicsSpace space, plant p, HashMap<Node, plant> hashingplant,plant[][] floor) {
 
         if (!channal.getAnimationName().equals("attacking")) {
             channal.setAnim("attacking");
@@ -128,7 +128,7 @@ public class Zombie {
                 hashingplant.remove(p.getNode(), p);
                 plan.remove(p);
                 space.remove(p.getNode().getControl(RigidBodyControl.class));
-                p.setNode(null);
+              floor [p.getRow()][p.getCol()]=null;
 
             }
         } catch (Exception e) {

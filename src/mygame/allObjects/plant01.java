@@ -15,7 +15,7 @@ import com.jme3.scene.Node;
  *
  * @author DELL
  */
-public class plant01 extends plant {
+public class plant01 extends Defenders {
 
     private final AssetManager assetManager;
    
@@ -45,4 +45,6 @@ public class plant01 extends plant {
 
         this.node.rotate(0, (float) Math.PI / 2, 0);
     }
+    
+    
 }
