@@ -27,7 +27,7 @@ import java.util.HashMap;
 public abstract class Attackers extends plant {
 
     private final AssetManager assetManager;
-    private float attackPower, attackSpeed, lastAttack;
+    protected float attackPower, attackSpeed, lastAttack,effect,effectTime;
 
     public  Attackers(AssetManager asset) {
         super(asset);
@@ -35,6 +35,7 @@ public abstract class Attackers extends plant {
         attackSpeed = 3;
         lastAttack = -1;
         assetManager = asset;
+        effect=0;
 
 
     }
@@ -47,7 +48,6 @@ public abstract class Attackers extends plant {
         Ray sight = new Ray(node.getWorldTranslation().add(0, 1, 0.05f), new Vector3f(1, 0, 0));
 
         node.getParent().collideWith(sight, results);
-
         boolean isAttack = false;
         for (int i = 0; i < results.size(); i++) {
             // For each hit, we know distance, impact point, name of geometry.
@@ -85,9 +85,9 @@ public abstract class Attackers extends plant {
         if (timeNow - lastAttack >= attackSpeed) {
 
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Blue);
+            mat.setColor("Color", ColorRGBA.Brown);
 
-            Bullet bullet = new Bullet(attackPower, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 1.5f, 0));
+            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 1.5f, 0));
 
             hashing.put(bullet.getNode(), bullet);
             lastAttack = timeNow;
@@ -114,5 +114,22 @@ public abstract class Attackers extends plant {
     public void setAttackSpeed(float attackSpeed) {
         this.attackSpeed = attackSpeed;
     }
+
+    public float getEffect() {
+        return effect;
+    }
+
+    public void setEffect(float effect) {
+        this.effect = effect;
+    }
+
+    public float getEffectTime() {
+        return effectTime;
+    }
+
+    public void setEffectTime(float effectTime) {
+        this.effectTime = effectTime;
+    }
+    
 
 }

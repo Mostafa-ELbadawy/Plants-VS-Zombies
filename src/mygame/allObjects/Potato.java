@@ -33,7 +33,7 @@ public class Potato extends  Defenders{
         control = null;
         channal = null;
         
-        this.node=(Node)node.getChild("Scene");
+        //this.node=(Node)node.getChild("Scene");
         this.node.addLight(new DirectionalLight());
         phyControl=new RigidBodyControl(0);
           

@@ -7,6 +7,8 @@ package mygame.allObjects;
 
 import addetions.PhysicsTestHelper;
 import addetions.pair;
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
@@ -50,7 +52,7 @@ import java.util.Random;
  * @author DELL
  */
 ////
-public class level extends AbstractAppState implements PhysicsCollisionListener {
+public class level extends AbstractAppState implements PhysicsCollisionListener, AnimEventListener {
 
     private final int side = 2;
     private plant[][] floor;
@@ -72,6 +74,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
     private HashMap<Geometry, Bullet> hashing;
     private HashMap<Node, Zombie> hashingzombie;
     private HashMap<Node, plant> hashingplant;
+    private HashMap<AnimControl, Zombie> hashingzombiecontrol;
 
     private PhysicsSpace space;
     private final Timer timer;
@@ -110,7 +113,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         space = bulletAppState.getPhysicsSpace();
-
+ flyByCamera.setMoveSpeed(30f);
+        flyByCamera.setZoomSpeed(30f);
         timer.reset();
         initFloor();
 
@@ -125,7 +129,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         camera.setLocation(new Vector3f(10.465846f, 25.21445f, 5.6196184f));
         camera.setRotation(new Quaternion(0.0196439f, 0.843758f, -0.53620327f, 0.01313919f));
 
-    //    flyByCamera.setEnabled(false);
+        flyByCamera.setEnabled(false);
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
         pq = Generator.genrate(44);
@@ -156,6 +160,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
 
     public void moveAllZombies(float tpf) {
         for (int i = 0; i < zomb.size(); i++) {
+          if(!zomb.get(i).isDamaged())
             zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space, floor);
         }
 
@@ -186,11 +191,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
             space.addAll(zomb.getLast().getNode());
             zomb.getLast().phyControl.setEnabled(false);
             zomb.getLast().getNode().setLocalTranslation(20, 0, -side / 2 - side * row);
-            zomb.getLast().getNode().rotate((float) Math.PI / 2, -(float) Math.PI / 2, 0);
+          
+            zomb.getLast().getNode().rotate(0,0, (float) Math.PI / 2);
 
             zomb.getLast().phyControl.setEnabled(true);
             hashingzombie.put(zomb.getLast().getNode(), zomb.getLast());
-
+            hashingzombiecontrol.put(zomb.getLast().control, zomb.getLast());
+            zomb.getLast().control.addListener(this);
         }
 
     }
@@ -238,6 +245,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         plan = new LinkedList<>();
         hashing = new HashMap<>();
 
+        hashingzombiecontrol=new HashMap<>();
         hashingzombie = new HashMap<>();
         hashingplant = new HashMap<>();
 
@@ -273,12 +281,16 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
                 try {
 
                     z.damage(B.getPower());
+                    if (B.getEffect()!=0)
+                    {
+                         z.setPoisonEffect(B.getEffect());
+                         z.setPoisonTime(B.getEffectTime());
+                         z.setLastPoison(timer.getTimeInSeconds());
+                         
+                    }
                     if (z.isDamaged()) {
                         bulletAppState.getPhysicsSpace().remove(z.getNode().getControl(RigidBodyControl.class));
-                        lvl.detachChild(z.getNode());
-                        hashingzombie.remove(z.getNode(), z);
-
-                        zomb.remove(z);
+                        z.dying();
                     }
 
                     lvl.detachChild(B.getNode());
@@ -404,6 +416,30 @@ public class level extends AbstractAppState implements PhysicsCollisionListener 
         lvl.attachChild(floorGeometry);
         space.add(floorGeometry);
 
+    }
+
+    @Override
+    public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
+    
+        if(animName.equals("dying"))
+        {
+            try {
+                Zombie z=hashingzombiecontrol.get(control);
+                z.getNode().getParent().detachChild(z.getNode());
+                zomb.remove(z);
+                 hashingzombie.remove(z.getNode(), z);
+
+                
+            } catch (Exception e) {
+            }
+
+        }
+        
+    }
+
+    @Override
+    public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
+    
     }
 
 }

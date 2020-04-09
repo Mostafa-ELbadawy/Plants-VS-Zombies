@@ -55,6 +55,7 @@ import org.lwjgl.Sys;
  */
 public class level01 extends AbstractAppState implements AnimEventListener, PhysicsCollisionListener {
 
+    
     private final SimpleApplication app;
     private final Camera camera;
     private final FlyByCamera flyByCamera;
@@ -401,13 +402,14 @@ public class level01 extends AbstractAppState implements AnimEventListener, Phys
             channel.setSpeed(1f);
         }
     }
+    
 
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
         // unused
 
     }
-
+    
     public void addzombie(int row, int typ, Vector3f v) {
         if (typ == 1) {
 

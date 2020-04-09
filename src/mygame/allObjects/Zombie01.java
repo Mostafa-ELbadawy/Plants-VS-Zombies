@@ -13,10 +13,6 @@ import com.jme3.scene.Node;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 
-/**
- *
- * @author DELL
- */
 public class Zombie01 extends Zombie 
 {
 private final AssetManager  assetManager;

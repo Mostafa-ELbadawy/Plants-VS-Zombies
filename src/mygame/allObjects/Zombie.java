@@ -13,6 +13,7 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -28,12 +29,13 @@ public class Zombie {
     private float health;
     private int row;
     protected String name;
-    private float attackPower, attackSpeed, movingSpeed, lastattack;
+    private float attackPower, attackSpeed, movingSpeed, lastattack,poisonEffect,poisonTime,lastPoison;
+    
     protected Node node;
     protected AnimControl control;
     protected AnimChannel channal;
     public RigidBodyControl phyControl;
-
+    
     public Zombie(AssetManager assetManager) {
         name = null;
         health = 100;
@@ -43,7 +45,8 @@ public class Zombie {
         movingSpeed = 1.0f;
         row = 0;
         node = new Node();
-
+        poisonEffect=0;
+         poisonTime=0;
     }
 
     public int getRow() {
@@ -64,6 +67,18 @@ public class Zombie {
 
     public void setstatus(float tpf, LinkedList<plant> plan, HashMap<Node, plant> hashingplant, float timeNow, PhysicsSpace space, plant[][] floor) {
 
+        
+       if(timeNow-lastPoison<poisonTime)
+       {
+           //color
+           node.getLocalLightList().get(0).setColor(ColorRGBA.Blue);
+       }
+       else
+       {
+           //color wight
+            node.getLocalLightList().get(0).setColor(ColorRGBA.White);
+           poisonEffect=0;
+       }
         CollisionResults results = new CollisionResults();
 
         Ray sight = new Ray(node.getWorldTranslation().add(0, 1, 0.05f), new Vector3f(-1, 0, 0));
@@ -78,11 +93,11 @@ public class Zombie {
             float dist = results.getCollision(i).getDistance();
             // System.out.println("i= " + i + " name= " + hitName + " dist= " + dist);
 
-            if (hitName.equals("MocapGuy_Body1") && dist < 1f) {
+            if (hitName.equals("plant") && dist < 1f) {
 
-                if (timeNow - lastattack >= attackSpeed) {
+                if (timeNow - lastattack >= attackSpeed-poisonEffect*2) {
                     lastattack = timeNow;
-                    plant p = hashingplant.get(results.getCollision(i).getGeometry().getParent().getParent().getParent().getParent());
+                    plant p = hashingplant.get(results.getCollision(i).getGeometry().getParent().getParent().getParent());
                     attack(plan, space, p, hashingplant, floor);
 
                 }
@@ -92,6 +107,7 @@ public class Zombie {
         move(tpf);
 
     }
+    
 
     public void move(float tpf) {
 
@@ -106,7 +122,7 @@ public class Zombie {
             System.out.println("channal is NULL");
         }
         phyControl.setEnabled(false);
-        node.move(-movingSpeed * tpf, 0, 0);
+        node.move(-(movingSpeed+poisonEffect) * tpf, 0, 0);
         phyControl.setEnabled(true);
 
     }
@@ -143,6 +159,13 @@ public class Zombie {
 
     public boolean isDamaged() {
         return (health <= 0);
+    }
+    public  void dying ()
+    {
+            channal.setAnim("dying");
+            channal.setLoopMode(LoopMode.DontLoop);
+        
+        
     }
 
     public float getHealth() {
@@ -193,4 +216,45 @@ public class Zombie {
         this.node = model;
     }
 
+    public float getPoisonEffect() {
+        return poisonEffect;
+    }
+
+    public void setPoisonEffect(float poisonEffect) {
+        this.poisonEffect = poisonEffect;
+    }
+
+    public float getPoisonTime() {
+        return poisonTime;
+    }
+
+    public void setPoisonTime(float poisonTime) {
+        this.poisonTime = poisonTime;
+    }
+
+    public float getLastPoison() {
+        return lastPoison;
+    }
+
+    public void setLastPoison(float lastPoison) {
+        this.lastPoison = lastPoison;
+    }
+
+    public AnimControl getControl() {
+        return control;
+    }
+
+    public void setControl(AnimControl control) {
+        this.control = control;
+    }
+
+    public RigidBodyControl getPhyControl() {
+        return phyControl;
+    }
+
+    public void setPhyControl(RigidBodyControl phyControl) {
+        this.phyControl = phyControl;
+    }
+
+    
 }

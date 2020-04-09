@@ -30,6 +30,9 @@ public class Grean_Plant extends Attackers{
         Node zomb = (Node) node.getChild(name);
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
+        setEffect(-0.5f);
+        setEffectTime(1.5f);
+        
         
            phyControl=new RigidBodyControl(0);
           

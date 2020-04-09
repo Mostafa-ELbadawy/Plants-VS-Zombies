@@ -23,23 +23,27 @@ import com.jme3.scene.shape.Sphere;
 public class Bullet {
   
     
-    private float power,speed;
+    private float power,speed,effect,effectTime;
     protected  Geometry node;
     
 
     
     
 
-    public Bullet(float power,Node root,PhysicsSpace space, Material mat, Vector3f v, float speed) {
+    public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f v, float speed) {
      
         this.power=power;
         this.speed=speed;
-        createBall(root, space, mat, v);
+        this.effect=effect;
+        this.effectTime=effectTime;
         
+        createBall(root, space, mat, v);
+       
     }
     
-    public Bullet(float power,Node root,PhysicsSpace space, Material mat, Vector3f v) {
-         this(power, root, space, mat, v, 5);
+    public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f v) {
+         this(effect,power,effectTime, root, space, mat, v, 5);
+    
     }
     
     private void createBall(Node root,PhysicsSpace space, Material mat, Vector3f v)
@@ -65,6 +69,22 @@ public class Bullet {
           
         
         
+    }
+
+    public float getEffect() {
+        return effect;
+    }
+
+    public void setEffect(float effect) {
+        this.effect = effect;
+    }
+
+    public float getEffectTime() {
+        return effectTime;
+    }
+
+    public void setEffectTime(float effectTime) {
+        this.effectTime = effectTime;
     }
 
     public float getPower() {
