@@ -27,6 +27,8 @@ private final AssetManager  assetManager;
             node=(Node)node.getChild(name);
             this.node=node;
         this.node.setName("zombie");
+          node.setLocalScale(0.05f, 0.05f, 0.05f);
+       
             this.node.addLight(new AmbientLight());
          phyControl=new RigidBodyControl(0);
         // phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);  

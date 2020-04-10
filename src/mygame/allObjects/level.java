@@ -15,13 +15,16 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.collision.Collidable;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.collision.UnsupportedCollisionException;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
@@ -30,6 +33,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -37,14 +41,18 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
+import com.jme3.texture.Texture;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 
 /**
@@ -54,8 +62,9 @@ import java.util.Random;
 ////
 public class level extends AbstractAppState implements PhysicsCollisionListener, AnimEventListener {
 
-    private final int side = 2;
+    private final float side = 5.8f;
     private plant[][] floor;
+    
 
     ///
     private final SimpleApplication app;
@@ -103,17 +112,16 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     public void initialize(AppStateManager stateManager, Application app) {
 
         super.initialize(stateManager, app);
-
         inivar();
         initKeys();
         root.attachChild(lvl);
         scane = assetManager.loadModel("Scenes/level1.j3o");
         lvl.attachChild(scane);
-
+    
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         space = bulletAppState.getPhysicsSpace();
- flyByCamera.setMoveSpeed(30f);
+        flyByCamera.setMoveSpeed(30f);
         flyByCamera.setZoomSpeed(30f);
         timer.reset();
         initFloor();
@@ -122,14 +130,19 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         addzombie(1);
         /////////////////////////////////////////////////////////////////////////////////
 
-       // bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
         space.setGravity(Vector3f.ZERO);
         space.addCollisionListener(this);
 
-        camera.setLocation(new Vector3f(10.465846f, 25.21445f, 5.6196184f));
+         //  camera.setLocation(new Vector3f(0.34607443f, 46.688816f, 33.021984f));
+        //  camera.setRotation(new Quaternion(0.011682421f, 0.8854312f, -0.46462032f, 0.0017531696f));
+
+        camera.setLocation(new Vector3f(10.465846f, 50.21445f, 5.6196184f));
         camera.setRotation(new Quaternion(0.0196439f, 0.843758f, -0.53620327f, 0.01313919f));
 
         flyByCamera.setEnabled(false);
+lvl.attachChild(createCard("Blender/card_cherrybomb.png"));
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
         pq = Generator.genrate(44);
@@ -190,8 +203,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             lvl.attachChild(zomb.getLast().getNode());
             space.addAll(zomb.getLast().getNode());
             zomb.getLast().phyControl.setEnabled(false);
-            zomb.getLast().getNode().setLocalTranslation(20, 0, -side / 2 - side * row);
-          
+            zomb.getLast().getNode().setLocalTranslation(10*side, 0, -side / 2 - side * row);
+       //   zomb.getLast().getNode().setLocalScale(0.05f, 0.05f, 0.05f);
             zomb.getLast().getNode().rotate(0,0, (float) Math.PI / 2);
 
             zomb.getLast().phyControl.setEnabled(true);
@@ -319,7 +332,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             }
             
             else if (name.equals("P") && !keyPressed) {
-                addplant(2, new Vector3f(5, 0,-1));
+               /* addplant(2, new Vector3f(5, 0,-1));
                 for (int i = 0; i < 9; i++) {
                     if (is_valid(co, i)) {
                         addplant(1, new Vector3f(co * side, 0, side * i));
@@ -328,8 +341,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
                         break;
                     }
-
                 }
+*/
+               flyByCamera.setEnabled(!flyByCamera.isEnabled());
 
             } else if (name.equals("Z") && !keyPressed) {
                 int r = rand.nextInt();
@@ -379,7 +393,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             }
 
         }
-
+        System.out.println("v= "+v.toString());
         return v;
 
     }
@@ -406,12 +420,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     private void initFloor() {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-            mat.setColor("Color", ColorRGBA.Green);
+//            mat.setColor("Color", ColorRGBA.Green);
 
-        Box floorBox = new Box(25, 0.25f, 25);
+        mat.setTexture("ColorMap",assetManager.loadTexture("Blender/mainBG.png"));
+        Box floorBox = new Box(26, 0.25f, 18);
         Geometry floorGeometry = new Geometry("Floor", floorBox);
         floorGeometry.setMaterial(mat);
-        floorGeometry.setLocalTranslation(0, -0.25f, 0);
+        floorGeometry.setLocalTranslation(25, -0.25f, -15);
         floorGeometry.addControl(new RigidBodyControl(0));
         lvl.attachChild(floorGeometry);
         space.add(floorGeometry);
@@ -440,6 +455,21 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
     
+    }
+    private  Geometry createCard(String pass )
+    {
+    Box box = new Box( 1f,1f,0.01f);
+    Geometry cube = new Geometry("card", box);
+    Material Mat = new Material(assetManager,
+        "Common/MatDefs/Misc/Unshaded.j3md");
+    Mat.setTexture("ColorMap",assetManager.loadTexture(pass));
+    Mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+    cube.setQueueBucket(RenderQueue.Bucket.Transparent);
+    cube.setMaterial(Mat);
+ 
+    cube.setLocalTranslation(0, 0, 0);
+    return cube;
+        
     }
 
 }

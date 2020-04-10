@@ -25,6 +25,7 @@ public class Grean_Plant extends Attackers{
         Node node = (Node) assetManager.loadModel("Blender/plant.j3o");
         this.node = node;
          this.node.setName("plant");
+         node.setLocalScale(5f);
 
         name = "MocapGuy_Teeth";
         Node zomb = (Node) node.getChild(name);
