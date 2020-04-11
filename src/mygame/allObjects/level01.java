@@ -45,7 +45,10 @@ import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import java.util.LinkedList;
 import com.jme3.system.Timer;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Scanner;
 import javax.xml.stream.XMLStreamConstants;
 import org.lwjgl.Sys;
 
@@ -96,8 +99,6 @@ public class level01 extends AbstractAppState implements AnimEventListener, Phys
         initKeys();
         inivar();
         initMark();
-        
-        
         root.attachChild(lvl);
         scane = assetManager.loadModel("Scenes/level1.j3o");
         lvl.attachChild(scane);
@@ -108,7 +109,9 @@ public class level01 extends AbstractAppState implements AnimEventListener, Phys
         addplant(0, 1, Vector3f.ZERO);
         addzombie(0, 1, new Vector3f(9, 0, 0));
         /////////////////////////////////////////////////////////////////////////////////
-
+        
+      
+//////////////////////////////////////////////////////////////////////////////////////
         bulletAppState.setDebugEnabled(true);
 
         PhysicsTestHelper.createBallShooter(app, root, bulletAppState.getPhysicsSpace());

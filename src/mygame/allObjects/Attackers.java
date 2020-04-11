@@ -45,7 +45,7 @@ public abstract class Attackers extends plant {
 
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 1, 0.05f), new Vector3f(1, 0, 0));
+        Ray sight = new Ray(node.getWorldTranslation().add(0, 3, 0.25f), new Vector3f(1, 0, 0));
 
         node.getParent().collideWith(sight, results);
         boolean isAttack = false;
@@ -87,7 +87,7 @@ public abstract class Attackers extends plant {
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", ColorRGBA.Brown);
 
-            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 1.5f, 0));
+            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 3f, 0));
 
             hashing.put(bullet.getNode(), bullet);
             lastAttack = timeNow;

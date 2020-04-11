@@ -49,6 +49,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
 import com.jme3.texture.Texture;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -79,6 +80,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private Spatial scane;
     private LinkedList<Zombie> zomb;
     private LinkedList<plant> plan;
+    private ArrayList<Card>cardsVector ;
 
     private HashMap<Geometry, Bullet> hashing;
     private HashMap<Node, Zombie> hashingzombie;
@@ -140,12 +142,26 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         camera.setLocation(new Vector3f(10.465846f, 50.21445f, 5.6196184f));
         camera.setRotation(new Quaternion(0.0196439f, 0.843758f, -0.53620327f, 0.01313919f));
 
-        flyByCamera.setEnabled(false);
-lvl.attachChild(createCard("Blender/card_cherrybomb.png"));
+       // flyByCamera.setEnabled(false);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+try {
+            
+cardsVector=Card.loadCards(assetManager);
 
-        pq = Generator.genrate(44);
+        } catch (Exception e) {
+        System.out.println("exxxxxxxxxxxxxxxxxxxxx");
+        }
+
+for(int i=0;i<cardsVector.size();i++)
+    lvl.attachChild(cardsVector.get(i).getNode());
+
+
+
+
+
+
+pq = Generator.genrate(44);
        // printqueue();
 /////////////////////////////////////////////////////////////////////////////////////////////
     }
@@ -251,13 +267,12 @@ lvl.attachChild(createCard("Blender/card_cherrybomb.png"));
         }
 
     }
-    ////
-
     private void inivar() {
         zomb = new LinkedList<>();
         plan = new LinkedList<>();
-        hashing = new HashMap<>();
+        cardsVector=new ArrayList<>();
 
+        hashing = new HashMap<>();
         hashingzombiecontrol=new HashMap<>();
         hashingzombie = new HashMap<>();
         hashingplant = new HashMap<>();
@@ -451,25 +466,11 @@ lvl.attachChild(createCard("Blender/card_cherrybomb.png"));
         }
         
     }
-
+    
+    
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
     
     }
-    private  Geometry createCard(String pass )
-    {
-    Box box = new Box( 1f,1f,0.01f);
-    Geometry cube = new Geometry("card", box);
-    Material Mat = new Material(assetManager,
-        "Common/MatDefs/Misc/Unshaded.j3md");
-    Mat.setTexture("ColorMap",assetManager.loadTexture(pass));
-    Mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-    cube.setQueueBucket(RenderQueue.Bucket.Transparent);
-    cube.setMaterial(Mat);
  
-    cube.setLocalTranslation(0, 0, 0);
-    return cube;
-        
-    }
-
 }

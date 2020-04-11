@@ -81,7 +81,7 @@ public class Zombie {
        }
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 1, 0.05f), new Vector3f(-1, 0, 0));
+        Ray sight = new Ray(node.getWorldTranslation().add(0, 3, 0.25f), new Vector3f(-1, 0, 0));
 
         node.getParent().collideWith(sight, results);
 

@@ -48,7 +48,7 @@ public class Bullet {
     
     private void createBall(Node root,PhysicsSpace space, Material mat, Vector3f v)
     {
-            Sphere bullet = new Sphere(32, 32, 0.1f, true, false);
+            Sphere bullet = new Sphere(32, 32, 1f, true, false);
             bullet.setTextureMode(Sphere.TextureMode.Projected);
             Geometry bulletg = new Geometry("bullet", bullet);
             node=bulletg;
