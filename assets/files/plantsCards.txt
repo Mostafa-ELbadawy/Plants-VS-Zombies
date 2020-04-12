@@ -1,4 +1,4 @@
-1 100 1 photos/card_peashooter.png
+1 100 5 photos/card_peashooter.png
 3 50 1 photos/card_sunflower.png
 2 50 1 photos/card_wallnut.png
 4 175 1 photos/card_freezepeashooter.png

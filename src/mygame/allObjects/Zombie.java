@@ -11,7 +11,6 @@ import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
@@ -42,7 +41,7 @@ public class Zombie {
         attackPower = 30;
         attackSpeed = 3;
         lastattack = -100;
-        movingSpeed = 1.0f;
+        movingSpeed = 4.0f;
         row = 0;
         node = new Node();
         poisonEffect=0;
@@ -65,9 +64,9 @@ public class Zombie {
         this.name = name;
     }
 
-    public void setstatus(float tpf, LinkedList<plant> plan, HashMap<Node, plant> hashingplant, float timeNow, PhysicsSpace space, plant[][] floor) {
+    public boolean setstatus(float tpf, LinkedList<plant> plan, HashMap<Node, plant> hashingplant, float timeNow, PhysicsSpace space, plant[][] floor) {
 
-        
+        int home=0;
        if(timeNow-lastPoison<poisonTime)
        {
            //color
@@ -101,11 +100,15 @@ public class Zombie {
                     attack(plan, space, p, hashingplant, floor);
 
                 }
-                return;
+                return false;
             }
+            else if(hitName.equals("Home"))
+                home++;
+            
         }
+        
         move(tpf);
-
+        return (home<2);
     }
     
 

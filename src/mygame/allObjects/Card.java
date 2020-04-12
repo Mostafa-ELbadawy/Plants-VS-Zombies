@@ -4,16 +4,15 @@ package mygame.allObjects;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import java.util.Scanner;
-import com.sun.java_cup.internal.runtime.Symbol;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-
-
+import java.util.HashMap;
 
 
 public class Card {
@@ -34,6 +33,22 @@ public class Card {
     
     }
 
+    public boolean isValid(float now)
+    {
+        return  (now-lastTaken>=timeLoading);
+    }
+    public  void checkColor(float now,Card Cur)
+    {
+        
+        if(Cur!=null&&Cur.typ==typ)
+        node.getMaterial().setColor("Color", ColorRGBA.Magenta);  
+        else if(isValid(now))
+            node.getMaterial().setColor("Color", ColorRGBA.White);
+         
+        else 
+            node.getMaterial().setColor("Color", ColorRGBA.DarkGray);
+                     
+    }
     public int getTyp() {
         return typ;
     }
@@ -82,31 +97,26 @@ public class Card {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     private  Geometry createCard(String pass )
     {
-    Box box = new Box( 2f,2f,0.01f);
-    Geometry cube = new Geometry("card", box);
-    Material Mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-    Mat.setTexture("ColorMap",assetManager.loadTexture(pass));
-    Mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-    cube.setQueueBucket(RenderQueue.Bucket.Transparent);
-    cube.setMaterial(Mat);
- 
-    cube.setLocalTranslation(0, 0, 0);
+        Box box = new Box( 2f,2f,0.01f);
+        Geometry cube = new Geometry("card", box);
+        
+        
+        Material Mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        Mat.setColor("Color", ColorRGBA.DarkGray);
+        Mat.setTexture("ColorMap",assetManager.loadTexture(pass));
+        Mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+        cube.setQueueBucket(RenderQueue.Bucket.Transparent);
+        cube.setMaterial(Mat);
+        cube.setLocalTranslation(0, 0, 0);
     return cube;
         
     }
+
     
-    public static  ArrayList<Card> loadCards(AssetManager assetManager) throws FileNotFoundException
+    
+    public static  ArrayList<Card> loadCards(AssetManager assetManager,HashMap<Geometry, Card> hashingCard) throws FileNotFoundException
     {
         ArrayList<Card> vector=new ArrayList<>();
         FileInputStream file=new FileInputStream("assets/files/plantsCards.txt");    
@@ -120,6 +130,7 @@ public class Card {
 
          String pass=scan.next();
          Card card=new Card(typ, cost, -5, time, assetManager, pass);
+         hashingCard.put(card.getNode(), card);
          card.getNode().setLocalTranslation(ind*4+8f, 5, -27);
         card.getNode().rotate(-(float)Math.PI/2, 0, 0);
          ind++;
