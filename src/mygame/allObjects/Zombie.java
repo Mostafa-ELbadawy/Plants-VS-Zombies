@@ -41,7 +41,7 @@ public class Zombie {
         attackPower = 30;
         attackSpeed = 3;
         lastattack = -100;
-        movingSpeed = 4.0f;
+        movingSpeed = 1.0f;
         row = 0;
         node = new Node();
         poisonEffect=0;

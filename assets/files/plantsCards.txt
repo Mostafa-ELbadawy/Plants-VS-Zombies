@@ -3,3 +3,4 @@
 2 50 1 photos/card_wallnut.png
 4 175 1 photos/card_freezepeashooter.png
 5 150 1 photos/card_cherrybomb.png
+6 50 3 photos/card_jump.png

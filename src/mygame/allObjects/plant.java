@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 public abstract  class plant {
 
-    private final AssetManager assetManager;
+    protected final AssetManager assetManager;
     private float health;
     protected Node node;
     protected AnimControl control;
@@ -111,6 +111,14 @@ public abstract  class plant {
 
     public void setCol(int col) {
         this.col = col;
+    }
+
+    public AnimControl getControl() {
+        return control;
+    }
+
+    public void setControl(AnimControl control) {
+        this.control = control;
     }
 
 }

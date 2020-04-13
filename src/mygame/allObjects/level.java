@@ -73,9 +73,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private final SimpleApplication app;
     private final Camera camera;
     private final FlyByCamera flyByCamera;
-    private final Node root;
+    private final Node root,guiNode;
     private Node lvl;
-    private final AssetManager assetManager;
+    protected final AssetManager assetManager;
     private final InputManager inputManager;
     private BulletAppState bulletAppState;
     private float startgametime;
@@ -89,18 +89,17 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private HashMap<Node, Zombie> hashingzombie;
     private HashMap<Node, plant> hashingplant;
     private HashMap<AnimControl, Zombie> hashingzombiecontrol;
-    
-    
+    private HashMap<AnimControl, plant> hashingPlantcontrol;
+
     private BitmapText scoreText;
-    
-    
-    private int score=150;
+
+    private int score = 150;
     private PhysicsSpace space;
     private final Timer timer;
     private Card curCard = null;
     Random rand = new Random();
     private Geometry mark;
-    private  boolean dead=false;    
+    private boolean dead = false;
     float right = 0, up = 0;
     private boolean mov = false;
     PriorityQueue<pair> pq;
@@ -113,6 +112,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         assetManager = app.getAssetManager();
         inputManager = app.getInputManager();
         timer = app.getTimer();
+      guiNode=app.getGuiNode();
         this.app = app;
 
     }
@@ -122,23 +122,21 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     public void initialize(AppStateManager stateManager, Application app) {
 
         super.initialize(stateManager, app);
-        
-        
+
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         space = bulletAppState.getPhysicsSpace();
         flyByCamera.setMoveSpeed(30f);
         flyByCamera.setZoomSpeed(30f);
         timer.reset();
-        
+
         initAllObject();
-     
-        root.attachChild(lvl);
+
+       // root.attachChild(lvl);
         scane = assetManager.loadModel("Scenes/level1.j3o");
         scane.setName("scane");
-        lvl.attachChild(scane);
-        
-        
+       /// lvl.attachChild(scane);
+
         addplant(Vector3f.ZERO);
         addzombie(1);
         /////////////////////////////////////////////////////////////////////////////////
@@ -176,12 +174,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         moveAllZombies(tpf);
         attackAllPlanet(tpf);
         checkqueue();
-         checkAllCards();
-    
-         scoreText.setText(Integer.toString(score));
-    if(dead)
-            System.out.println("Dead");
-    
+        checkAllCards();
+
+        scoreText.setText(Integer.toString(score));
+        if (dead) {
+         //   System.out.println("Dead");
+        }
+
     }
 
     private void printqueue() {
@@ -202,7 +201,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     public void moveAllZombies(float tpf) {
         for (int i = 0; i < zomb.size(); i++) {
             if (!zomb.get(i).isDamaged()) {
-               dead=( zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space, floor)||dead);
+                dead = (zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space, floor) || dead);
             }
         }
 
@@ -215,25 +214,21 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    public void checkAllCards()
-    {
-        for(int i=0;i<cardsVector.size();i++)
-            cardsVector.get(i).checkColor(timer.getTimeInSeconds(),curCard);
-        
-    
+    public void checkAllCards() {
+        for (int i = 0; i < cardsVector.size(); i++) {
+            cardsVector.get(i).checkColor(timer.getTimeInSeconds(), curCard);
+        }
+
     }
-    
-   public void  initAllObject()
-   {
-         inivar();
+
+    public void initAllObject() {
+        inivar();
         initKeys();
         initFloor();
         initScoreText();
         initHome();
-   }
-    
-    
-    
+    }
+
     public boolean is_valid(int x, int y) {
 
         if (x < 0 || x > 4 || y < 0 || y > 8) {
@@ -257,44 +252,47 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
             zomb.getLast().phyControl.setEnabled(true);
             hashingzombie.put(zomb.getLast().getNode(), zomb.getLast());
-            hashingzombiecontrol.put(zomb.getLast().control, zomb.getLast());
-            zomb.getLast().control.addListener(this);
+            hashingzombiecontrol.put(zomb.getLast().getControl(), zomb.getLast());
+            zomb.getLast().getControl().addListener(this);
         }
 
     }
 
-    public void addplant(Vector3f v)
-    {
+    public void addplant(Vector3f v) {
 
         int col = (int) (v.x / side), row = (int) -(v.z / side);
-        if (curCard == null)
-        {
+        if (curCard == null) {
             return;
         }
-        if (is_valid(row, col)&&curCard.getCost()<=score) 
-        {
-            if (curCard.getTyp() == 1) 
-            {
+        if (is_valid(row, col) && curCard.getCost() <= score) {
+            
+            
+            
+            
+            if (curCard.getTyp() == 1) {
+                
                 plan.add(new Grean_Plant(assetManager));
-            } else if (curCard.getTyp() == 2)
-            {
-                plan.add(new Potato(assetManager));    
+            } else if (curCard.getTyp() == 2) {
+                plan.add(new Potato(assetManager));
+            } else if (curCard.getTyp() == 6) {
+                plan.add(new Jumper(assetManager));
+                hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());
+                plan.getLast().getControl().addListener(this);
             }
 
-               floor[row][col] = plan.getLast();
-                lvl.attachChild(plan.getLast().getNode());
-                space.addAll(plan.getLast().getNode());
-                plan.getLast().phyControl.setEnabled(false);
-                plan.getLast().setRow(row);
-                plan.getLast().setCol(col);
-                plan.getLast().getNode().setLocalTranslation(col * side + side / 2, 0, -side / 2 - side * row);
-                plan.getLast().phyControl.setEnabled(true);
-                hashingplant.put(plan.getLast().getNode(), plan.getLast());
+            floor[row][col] = plan.getLast();
+            lvl.attachChild(plan.getLast().getNode());
+            space.addAll(plan.getLast().getNode());
+            plan.getLast().phyControl.setEnabled(false);
+            plan.getLast().setRow(row);
+            plan.getLast().setCol(col);
+            plan.getLast().getNode().setLocalTranslation(col * side + side / 2, 0, -side / 2 - side * row);
+            plan.getLast().phyControl.setEnabled(true);
+            hashingplant.put(plan.getLast().getNode(), plan.getLast());
 
-                curCard.setLastTaken(timer.getTimeInSeconds());
-                score-=curCard.getCost();
-                curCard = null;
-            
+            curCard.setLastTaken(timer.getTimeInSeconds());
+            score -= curCard.getCost();
+            curCard = null;
 
         }
 
@@ -309,9 +307,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         hashingCard = new HashMap<>();
         hashingzombiecontrol = new HashMap<>();
         hashingzombie = new HashMap<>();
-        hashingplant = new HashMap<>();
-
-        lvl = new Node("level1");
+        hashingplant = new HashMap<>(); 
+        hashingPlantcontrol=new HashMap<>();
+        //lvl = new Node("level1");
+        lvl=root;
         floor = new plant[6][10];
 
         for (int i = 0; i < 6; i++) {
@@ -434,10 +433,11 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                     v = results.getCollision(i).getContactPoint();
                     //   break;
                 } else if (hitName.equals("card")) {
-                    
+
                     curCard = hashingCard.get(results.getCollision(i).getGeometry());
-                    if(!curCard.isValid(timer.getTimeInSeconds()))
-                        curCard=null;
+                    if (!curCard.isValid(timer.getTimeInSeconds())) {
+                        curCard = null;
+                    }
                     //  System.out.println("#card = " +curCard.toString()+" typ=  "+curCard.getTyp());   
                 }
 
@@ -482,8 +482,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         space.add(floorGeometry);
 
     }
-    private void initHome()
-    {
+
+    private void initHome() {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Black);
 
@@ -493,12 +493,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         HomeGeometry.setLocalTranslation(-27, 10, -15);
         lvl.attachChild(HomeGeometry);
         //floorGeometry.addControl(new RigidBodyControl(0));
-      //  space.add(floorGeometry);
-        
-        
+        //  space.add(floorGeometry);
+
     }
-    
-    
 
     @Override
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
@@ -509,29 +506,73 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 z.getNode().getParent().detachChild(z.getNode());
                 zomb.remove(z);
                 hashingzombie.remove(z.getNode(), z);
+                hashingzombiecontrol.remove(z.getControl(),z);
 
             } catch (Exception e) {
+            }
+
+        } else if (animName.equals("attacking")) {
+            try {
+                plant p = hashingPlantcontrol.get(control);
+                killFrontZombies(p.getNode().getLocalTranslation());
+                lvl.detachChild(p.getNode());
+                plan.remove(p);
+                hashingplant.remove(p.getNode(), p);
+                hashingPlantcontrol.remove(p.getControl(),p);
+                space.remove(p.phyControl);
+                System.out.println("Dooooooone");
+
+            } catch (Exception e) {
+                System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaad");
             }
 
         }
 
     }
-    void initScoreText()
-    {
-        BitmapFont font =assetManager.loadFont("Interface/Fonts/Console.fnt");
-        
-        scoreText=new BitmapText(font);
-        scoreText.setSize(2);
-       
-        scoreText.setColor(ColorRGBA.Black);
-        
-        lvl.attachChild(scoreText);
-        
+
+    private void killFrontZombies(Vector3f pos) {
+        CollisionResults results = new CollisionResults();
+
+        Ray sight = new Ray(pos.add(0, 3, 0.25f), new Vector3f(1, 0, 0));
+
+        lvl.collideWith(sight, results);
+        for (int i = 0; i < results.size(); i++) {
+            String hitName = results.getCollision(i).getGeometry().getName();
+            float dis = results.getCollision(i).getDistance();
+            if (hitName.equals("Yaku_zombie1") && dis <= 6f) {
+              try{
+                Zombie z=hashingzombie.get(results.getCollision(i).getGeometry().getParent());
+                bulletAppState.getPhysicsSpace().remove(z.getNode().getControl(RigidBodyControl.class));
+                z.getNode().getParent().detachChild(z.getNode());
+                zomb.remove(z);
+                hashingzombie.remove(z.getNode(), z);
+                hashingzombiecontrol.remove(z.getControl(),z);
+              }catch (Exception e) {
+                System.out.println("zombie dell");
+            }   
+
+            }
+            if(dis>6)
+                break;
+
+        }
+
+    }
+
+    void initScoreText() {
+        BitmapFont font = assetManager.loadFont("Interface/Fonts/Console.fnt");
+
+        scoreText = new BitmapText(font);
+        scoreText.setSize(50);
+
+        scoreText.setColor(ColorRGBA.Blue);
+
         scoreText.setText(Integer.toString(score));
-       scoreText.setLocalTranslation(2f, 5, -26.5f);
-         scoreText.rotate(-(float)Math.PI/2, 0, 0);
-     
-        
+        guiNode.attachChild(scoreText);
+
+      //  scoreText.setLocalTranslation(2f, 5, -26.5f);
+     //   scoreText.rotate(-(float) Math.PI / 2, 0, 0);
+
     }
 
     @Override

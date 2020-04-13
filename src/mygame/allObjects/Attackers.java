@@ -26,7 +26,6 @@ import java.util.HashMap;
  */
 public abstract class Attackers extends plant {
 
-    private final AssetManager assetManager;
     protected float attackPower, attackSpeed, lastAttack,effect,effectTime;
 
     public  Attackers(AssetManager asset) {
@@ -34,7 +33,6 @@ public abstract class Attackers extends plant {
         attackPower = 10;
         attackSpeed = 3;
         lastAttack = -1;
-        assetManager = asset;
         effect=0;
 
 
