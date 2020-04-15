@@ -52,6 +52,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
 import com.jme3.texture.Texture;
+import com.jme3.ui.Picture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -113,7 +114,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         inputManager = app.getInputManager();
         timer = app.getTimer();
       guiNode=app.getGuiNode();
-        this.app = app;
+      
+      this.app = app;
 
     }
 
@@ -135,7 +137,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
        // root.attachChild(lvl);
         scane = assetManager.loadModel("Scenes/level1.j3o");
         scane.setName("scane");
-       /// lvl.attachChild(scane);
+        lvl.attachChild(scane);
 
         addplant(Vector3f.ZERO);
         addzombie(1);
@@ -152,6 +154,21 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         // flyByCamera.setEnabled(false);
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+Node n=new Node("test");
+//guiNode.attachChild(n);
+Picture pic = new Picture("HUD Picture");
+pic.setImage(assetManager, "Blender/wall1.png", true);
+pic.setWidth(400);
+pic.setHeight(300);
+pic.setPosition(200, 150);
+
+n.attachChild(pic);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
         try {
 
             cardsVector = Card.loadCards(assetManager, hashingCard);
@@ -160,9 +177,17 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             System.out.println("exxxxxxxxxxxxxxxxxxxxx");
         }
 
+guiNode.addLight(new AmbientLight());
+Node cardsNode=new Node("cards");
+//cardsNode.setLocalTranslation(50, 50, 1);
+lvl.attachChild(cardsNode);
+
         for (int i = 0; i < cardsVector.size(); i++) {
-            lvl.attachChild(cardsVector.get(i).getNode());
+            cardsNode.attachChild(cardsVector.get(i).getNode());
+            guiNode.attachChild(cardsVector.get(i).getPic());
+  
         }
+//        cardsNode.updateGeometricState();
 
         pq = Generator.genrate(44);
         // printqueue();
@@ -433,7 +458,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                     v = results.getCollision(i).getContactPoint();
                     //   break;
                 } else if (hitName.equals("card")) {
-
+                     System.out.println("ya rab");
                     curCard = hashingCard.get(results.getCollision(i).getGeometry());
                     if (!curCard.isValid(timer.getTimeInSeconds())) {
                         curCard = null;
