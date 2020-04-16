@@ -5,7 +5,15 @@
  */
 package mygame.allObjects;
 
-import addetions.PhysicsTestHelper;
+
+import com.jme3.niftygui.NiftyJmeDisplay;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.LayerBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
+import de.lessvoid.nifty.screen.DefaultScreenController;
+
 import addetions.pair;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -15,16 +23,12 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.collision.Collidable;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.collision.UnsupportedCollisionException;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.FlyByCamera;
@@ -36,30 +40,23 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
-import com.jme3.texture.Texture;
 import com.jme3.ui.Picture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Random;
-import net.java.games.input.Component;
 
 /**
  *
@@ -168,6 +165,21 @@ pic.setPosition(200, 150);
 n.attachChild(pic);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
         try {
 
@@ -184,7 +196,7 @@ lvl.attachChild(cardsNode);
 
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsNode.attachChild(cardsVector.get(i).getNode());
-            guiNode.attachChild(cardsVector.get(i).getPic());
+          //  guiNode.attachChild(cardsVector.get(i).getPic());
   
         }
 //        cardsNode.updateGeometricState();
@@ -412,8 +424,10 @@ lvl.attachChild(cardsNode);
                     }
                 }
                  */
+                
                 flyByCamera.setEnabled(!flyByCamera.isEnabled());
-
+                inputManager.setCursorVisible(flyByCamera.isEnabled());
+                oninable();
             } else if (name.equals("Z") && !keyPressed) {
                 int r = rand.nextInt();
                 if (r < 0) {
@@ -605,4 +619,62 @@ lvl.attachChild(cardsNode);
 
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+      public void oninable() {
+          
+    NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
+                assetManager,
+               app.getInputManager(),
+                app.getAudioRenderer(),
+                app.getGuiViewPort());
+
+        Nifty nifty = niftyDisplay.getNifty();
+        app.getGuiViewPort().addProcessor(niftyDisplay);
+        ((SimpleApplication) app).getFlyByCamera().setDragToRotate(true);
+
+        nifty.loadStyleFile("nifty-default-styles.xml");
+        nifty.loadControlFile("nifty-default-controls.xml");
+
+        // <screen>
+        nifty.addScreen("Screen_ID", new ScreenBuilder("Hello Nifty Screen"){{
+            controller(new DefaultScreenController()); // Screen properties
+
+            // <layer>
+            layer(new LayerBuilder("Layer_ID") {{
+                childLayoutVertical(); // layer properties, add more...
+
+                // <panel>
+                panel(new PanelBuilder("Panel_ID") {{
+                   childLayoutCenter(); // panel properties, add more...
+
+                    // GUI elements
+                    control(new ButtonBuilder("Button_ID", "Exeit"){{
+                        alignCenter();
+                        valignCenter();
+                        height("5%");
+                        width("15%");
+                    }});
+
+                    //.. add more GUI elements here
+
+                }});
+                // </panel>
+              }});
+            // </layer>
+          }}.build(nifty));
+        // </screen>
+
+        nifty.gotoScreen("Screen_ID"); // start the screen
+
+
+    
+    }
+    
 }

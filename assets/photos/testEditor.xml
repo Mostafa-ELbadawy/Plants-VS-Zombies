@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<nifty>
+    <useControls filename="nifty-default-controls.xml"/>
+    <useStyles filename="nifty-default-styles.xml"/>
+    <screen id="GScreen6">
+        <layer id="layer1" childLayout="absolute" backgroundColor="#009999ff">
+            <control name="button" id="startB" childLayout="center" backgroundColor="#00ff33ff" x="221" width="303px" y="122" label="start" height="75px"/>
+            <control name="button" id="exitB" childLayout="center" backgroundColor="#00ff33ff" x="224" width="303px" y="245" style="nifty-button" label="Exit" height="76px"/>
+        </layer>
+    </screen>
+</nifty>
