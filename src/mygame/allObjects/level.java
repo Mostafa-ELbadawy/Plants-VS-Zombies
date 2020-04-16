@@ -52,6 +52,8 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
 import com.jme3.ui.Picture;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -110,6 +112,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         assetManager = app.getAssetManager();
         inputManager = app.getInputManager();
         timer = app.getTimer();
+        app.getStateManager();
       guiNode=app.getGuiNode();
       
       this.app = app;
@@ -131,7 +134,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         initAllObject();
 
-       // root.attachChild(lvl);
+        root.attachChild(lvl);
         scane = assetManager.loadModel("Scenes/level1.j3o");
         scane.setName("scane");
         lvl.attachChild(scane);
@@ -339,15 +342,16 @@ lvl.attachChild(cardsNode);
         zomb = new LinkedList<>();
         plan = new LinkedList<>();
         cardsVector = new ArrayList<>();
-
+        
+        
         hashing = new HashMap<>();
         hashingCard = new HashMap<>();
         hashingzombiecontrol = new HashMap<>();
         hashingzombie = new HashMap<>();
         hashingplant = new HashMap<>(); 
         hashingPlantcontrol=new HashMap<>();
-        //lvl = new Node("level1");
-        lvl=root;
+        lvl = new Node("level1");
+        //lvl=root;
         floor = new plant[6][10];
 
         for (int i = 0; i < 6; i++) {
@@ -427,7 +431,7 @@ lvl.attachChild(cardsNode);
                 
                 flyByCamera.setEnabled(!flyByCamera.isEnabled());
                 inputManager.setCursorVisible(flyByCamera.isEnabled());
-                oninable();
+    
             } else if (name.equals("Z") && !keyPressed) {
                 int r = rand.nextInt();
                 if (r < 0) {
@@ -620,61 +624,11 @@ lvl.attachChild(cardsNode);
     }
 
     
-    
-    
-    
-    
-    
-    
-    
-      public void oninable() {
-          
-    NiftyJmeDisplay niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(
-                assetManager,
-               app.getInputManager(),
-                app.getAudioRenderer(),
-                app.getGuiViewPort());
-
-        Nifty nifty = niftyDisplay.getNifty();
-        app.getGuiViewPort().addProcessor(niftyDisplay);
-        ((SimpleApplication) app).getFlyByCamera().setDragToRotate(true);
-
-        nifty.loadStyleFile("nifty-default-styles.xml");
-        nifty.loadControlFile("nifty-default-controls.xml");
-
-        // <screen>
-        nifty.addScreen("Screen_ID", new ScreenBuilder("Hello Nifty Screen"){{
-            controller(new DefaultScreenController()); // Screen properties
-
-            // <layer>
-            layer(new LayerBuilder("Layer_ID") {{
-                childLayoutVertical(); // layer properties, add more...
-
-                // <panel>
-                panel(new PanelBuilder("Panel_ID") {{
-                   childLayoutCenter(); // panel properties, add more...
-
-                    // GUI elements
-                    control(new ButtonBuilder("Button_ID", "Exeit"){{
-                        alignCenter();
-                        valignCenter();
-                        height("5%");
-                        width("15%");
-                    }});
-
-                    //.. add more GUI elements here
-
-                }});
-                // </panel>
-              }});
-            // </layer>
-          }}.build(nifty));
-        // </screen>
-
-        nifty.gotoScreen("Screen_ID"); // start the screen
-
-
-    
-    }
-    
 }
+    
+    
+    
+    
+    
+    
+    
