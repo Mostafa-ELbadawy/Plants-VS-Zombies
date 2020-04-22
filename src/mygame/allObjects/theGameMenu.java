@@ -12,24 +12,34 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.Timer;
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
+import de.lessvoid.nifty.controls.imageselect.builder.ImageSelectBuilder;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-
+import java.awt.Color;
+import javafx.scene.layout.Background;
+import de.lessvoid.nifty.builder.ElementBuilder;
+import de.lessvoid.nifty.screen.DefaultScreenController;
+import de.lessvoid.nifty.tools.SizeValue;
+import java.awt.Button;
+import javax.swing.SwingWorker;
 /**
  *
  * @author DELL
  */
 public class theGameMenu extends AbstractAppState implements ScreenController{
-
+private Background manu_img;
     private Camera camera;
     private FlyByCamera flyByCamera;
     private Node root;
@@ -40,6 +50,10 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
     private SimpleApplication app;
     private NiftyJmeDisplay niftyDisplay ;
     private Nifty nifty;
+ private ButtonBuilder btn;
+    
+    
+    
     public theGameMenu (SimpleApplication app) {
         camera = app.getCamera();
         flyByCamera = app.getFlyByCamera();
@@ -48,7 +62,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
         inputManager = app.getInputManager();
         timer = app.getTimer();
       guiNode=app.getGuiNode();
-      
+        
       this.app = app;
 
     }
@@ -69,8 +83,40 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
        app.getStateManager().attach( new level(app));
           System.out.println("mygame.allObjects.theGameMenu.test()");
       }
+  
+       public  void cardlist()
+      {
+        // Screen.getRootElement().setVisible(false);
+          
+          
+          System.out.println("mygame.allObjects.theGameMenu.cardlist()");
+              nifty.addScreen("card list", new ScreenBuilder("Hello Nifty Screen"){{
+          // controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
+      controller(new DefaultScreenController());
+                  System.out.println(".cardlist()");
+             layer(new LayerBuilder("background") {{
+          childLayoutVertical(); // layer properties, add more...
+          backgroundColor("#000f");
+        // add image
+        image(new ImageBuilder() {{
+        childLayoutCenter();
+            filename("photos/cards_img.jpg");
+              height("100%");
+                        width("100%");
+        }});
+             }});
+            
+            
+            
+            
+
+              } }.build(nifty));
+              //nifty.getCurrentScreen().endScreen("empty");
+                  nifty.gotoScreen("card list"); // start the screen
       
-      
+          System.out.println("nnnnnnnnnnnnnn");
+                      }
+          
       
       
       
@@ -89,7 +135,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
     public void onEndScreen() {
     System.out.println("You end the screen`");
     }
-    
+  
     
       public void GUI() {
           
@@ -104,7 +150,6 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
 
              mainMenu();
 
-        nifty.gotoScreen("Main Screen"); // start the screen
    }
       private void mainMenu()
       {
@@ -113,18 +158,160 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
             controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
 
             // <layer>
-            layer(new LayerBuilder("Layer01") {{
-                childLayoutVertical(); // layer properties, add more...
-
+           layer(new LayerBuilder("background") {{
+          childLayoutVertical(); // layer properties, add more...
+          backgroundColor("#000f");
+        // add image
+        image(new ImageBuilder() {{
+        childLayoutCenter();
+            filename("photos/menu_img1.jpg");
+              height("50%");
+                        width("50%");
+                    
+            
+        
                 // <panel>
+                
+               panel(new PanelBuilder("Panel02") {{
+                   childLayoutCenter(); // panel properties, add more...
+                    //    backgroundColor("#88f8");
+                         
+                   height("40%");
+                        width("15%");
+                    
+                          
+                    // GUI elements
+                    control(new ButtonBuilder("Button01", "Start Game"){{
+                       // alignCenter();
+                        valignTop();
+                       // valignCenter();
+                        height("20%");
+                        width("100%");
+                        
+                        interactOnClick("test()");
+                        
+                    }});
+                    
+                    // GUI elements
+                    
+
+                    //.. add more GUI elements here
+                                      control(new ButtonBuilder("Button02", "Options"){{
+                        //alignCenter();
+                       //valignTop();
+                      //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
+                        valignCenter();
+                        System.out.println("////////////////");
+                           x(SizeValue.px(2));
+                          y(SizeValue.px(2));
+                                   backgroundColor("#ff3CB371");
+                           
+                        height("20%");
+                        width("100%");
+                        interactOnClick("cardlist()");
+                        
+                    }});
+
+                  control(new ButtonBuilder("Button03", "Exit"){{
+                        //alignCenter();
+                       //valignTop();
+                      //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
+                        valignBottom();
+                       
+                        height("20%");
+                        width("100%");
+                        interactOnClick("test()");
+                        
+                    }});
+                  
+                }});
+                
+             }}); 
+                  
+             
+
+    }});
+           
+   
+  
+          /* layer(new LayerBuilder("Layer02") {{
+                  childLayoutVertical(); // layer properties, add more...
+          
+panel(new PanelBuilder("panel_up_left") {{
+    childLayoutCenter();
+                       childLayoutCenter(); // panel properties, add more...
+                 childLayoutHorizontal();
+    valignCenter();
+   
+    height("50%");
+    width("60%");
+    //panel(this);
+    // add control
+    control(new ButtonBuilder("StartButton", "Start") {{
+    
+        alignCenter();
+       valignCenter();
+     
+       
+       alignLeft();
+        alignRight();
+        height("10%");
+        width("20%");
+          interactOnClick("test()");
+       
+    }});
+ 
+      control(new ButtonBuilder("QuitButton", "Quit") {{
+          
+           valignCenter();
+        alignLeft();
+        alignRight();
+        alignCenter();
+        
+        height("10%");
+        width("20%");
+        interactOnClick("test()");
+    }});
+     }});*/
+
+                 
+
+/*panel(new PanelBuilder("panel_up_right") {{
+    childLayoutCenter();
+    valignCenter();
+    backgroundColor("#88f8");
+    height("20%");
+    width("20%");
+
+    // add control
+    control(new ButtonBuilder("QuitButton", "Quit") {{
+        alignCenter();
+        valignCenter();
+        height("100%");
+        width("100%");
+    }});
+}});
+ }}); */
+           
+           
+           
+           ///////////////////
+           
+            /*layer(new LayerBuilder("Layer01") {{
+
+               
+                childLayoutVertical(); // layer properties, add more...
+                // <panel>
+                
                 panel(new PanelBuilder("Panel01") {{
-                 //  childLayoutCenter(); // panel properties, add more...
+                   childLayoutCenter(); // panel properties, add more...
                  childLayoutHorizontal();
                   
                        
-                   height("100%");
-                        width("100%");
+                   height("10%");
+                        width("10%");
                     
+                          
                     // GUI elements
                     control(new ButtonBuilder("Button01", "Start Game"){{
                         alignCenter();
@@ -135,7 +322,6 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
                         interactOnClick("test()");
                         
                     }});
-                    
                     
                     // GUI elements
                     
@@ -152,12 +338,59 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
                         interactOnClick("test()");
                         
                     }});
-                }});
                   
-              }});
-          }}.build(nifty));
+                }}); 
+                
+                panel(new PanelBuilder("Panel02") {{
+                   childLayoutCenter(); // panel properties, add more...
+                 childLayoutHorizontal();
+                  
+                       
+                   height("200%");
+                        width("200%");
+                    
+                          
+                    // GUI elements
+                    control(new ButtonBuilder("Button02", "Start Game"){{
+                        alignCenter();
+                       // valignCenter();
+                       
+                        height("5%");
+                        width("15%");
+                        interactOnClick("test()");
+                        
+                    }});
+                    
+                    // GUI elements
+                    
 
-          
+                    //.. add more GUI elements here
+
+                  control(new ButtonBuilder("Button02", "Start Game2"){{
+                        alignCenter();
+                     //   valignTop();
+                        
+                       
+                        height("5%");
+                        width("15%");
+                        interactOnClick("test()");
+                        
+                    }});
+                  
+                }});
+                
+            
+                  
+              }}); */
+          }
+
+            private void panel(PanelBuilder panelBuilder) {
+
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        }.build(nifty));
+
+               nifty.gotoScreen("Main Screen"); // start the screen
           
           
       }

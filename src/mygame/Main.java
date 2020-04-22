@@ -22,7 +22,7 @@ public class Main extends SimpleApplication{
     @Override
     public void simpleInitApp() {
 
-             stateManager.attach(new theGameMenu(this));
+             stateManager.attach(new level(this));
     }
 
 
