@@ -28,7 +28,7 @@ import de.lessvoid.nifty.controls.imageselect.builder.ImageSelectBuilder;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import java.awt.Color;
-import javafx.scene.layout.Background;
+//import javafx.scene.layout.Background;
 import de.lessvoid.nifty.builder.ElementBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -39,7 +39,7 @@ import javax.swing.SwingWorker;
  * @author DELL
  */
 public class theGameMenu extends AbstractAppState implements ScreenController{
-private Background manu_img;
+//private Background manu_img;
     private Camera camera;
     private FlyByCamera flyByCamera;
     private Node root;
@@ -80,15 +80,30 @@ private Background manu_img;
     
     public  void test()
       {
-       app.getStateManager().attach( new level(app));
-          System.out.println("mygame.allObjects.theGameMenu.test()");
+  
+            app.getStateManager().attach( new level(app));  
+           app.getGuiViewPort().removeProcessor(getNiftyDisplay());
+      
+      
       }
+    private NiftyJmeDisplay getNiftyDisplay()
+    {
+        for(int i=0;i<app.getGuiViewPort().getProcessors().size();i++)
+       {
+           if(app.getGuiViewPort().getProcessors().get(i)instanceof NiftyJmeDisplay)
+          return (NiftyJmeDisplay) app.getGuiViewPort().getProcessors().get(i);
+       }
+        return null;
+        
+    }
   
        public  void cardlist()
       {
         // Screen.getRootElement().setVisible(false);
+         System.out.println( "habd212 "+(nifty==null));
           
-          
+          niftyDisplay=getNiftyDisplay();
+          nifty=niftyDisplay.getNifty();
           System.out.println("mygame.allObjects.theGameMenu.cardlist()");
               nifty.addScreen("card list", new ScreenBuilder("Hello Nifty Screen"){{
           // controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
@@ -96,7 +111,7 @@ private Background manu_img;
                   System.out.println(".cardlist()");
              layer(new LayerBuilder("background") {{
           childLayoutVertical(); // layer properties, add more...
-          backgroundColor("#000f");
+          backgroundColor("#0000ff");
         // add image
         image(new ImageBuilder() {{
         childLayoutCenter();
@@ -113,7 +128,6 @@ private Background manu_img;
               } }.build(nifty));
               //nifty.getCurrentScreen().endScreen("empty");
                   nifty.gotoScreen("card list"); // start the screen
-      
           System.out.println("nnnnnnnnnnnnnn");
                       }
           
@@ -141,12 +155,16 @@ private Background manu_img;
           
     niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(assetManager,app.getInputManager(),app.getAudioRenderer(),app.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
+       
         app.getGuiViewPort().addProcessor(niftyDisplay);
+        
+        
         app.getFlyByCamera().setDragToRotate(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
 
-
+   System.out.println( "habd "+(nifty==null));
+          
 
              mainMenu();
 
@@ -160,13 +178,13 @@ private Background manu_img;
             // <layer>
            layer(new LayerBuilder("background") {{
           childLayoutVertical(); // layer properties, add more...
-          backgroundColor("#000f");
+         // backgroundColor("#00ff00");
         // add image
         image(new ImageBuilder() {{
         childLayoutCenter();
             filename("photos/menu_img1.jpg");
-              height("50%");
-                        width("50%");
+              height("100%");
+                        width("100%");
                     
             
         
@@ -386,12 +404,11 @@ panel(new PanelBuilder("panel_up_left") {{
 
             private void panel(PanelBuilder panelBuilder) {
 
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         }.build(nifty));
 
                nifty.gotoScreen("Main Screen"); // start the screen
-          
           
       }
 
