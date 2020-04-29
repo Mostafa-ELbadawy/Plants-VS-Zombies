@@ -23,7 +23,7 @@ import java.util.LinkedList;
  *
  * @author DELL
  */
-public class Zombie {
+public abstract class Zombie {
 
     private float health;
     private int row;
@@ -34,6 +34,7 @@ public class Zombie {
     protected AnimControl control;
     protected AnimChannel channal;
     public RigidBodyControl phyControl;
+    protected AssetManager assetManager;
     
     public Zombie(AssetManager assetManager) {
         name = null;
@@ -46,6 +47,7 @@ public class Zombie {
         node = new Node();
         poisonEffect=0;
          poisonTime=0;
+         this.assetManager=assetManager;
     }
 
     public int getRow() {

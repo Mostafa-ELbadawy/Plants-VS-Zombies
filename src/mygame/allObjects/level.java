@@ -6,14 +6,6 @@
 package mygame.allObjects;
 
 
-import com.jme3.niftygui.NiftyJmeDisplay;
-import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.builder.LayerBuilder;
-import de.lessvoid.nifty.builder.PanelBuilder;
-import de.lessvoid.nifty.builder.ScreenBuilder;
-import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
-import de.lessvoid.nifty.screen.DefaultScreenController;
-
 import addetions.pair;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -52,8 +44,6 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
 import com.jme3.ui.Picture;
-import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -93,7 +83,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     private BitmapText scoreText;
 
-    private int score = 150;
+    private int score = 15000;
     private PhysicsSpace space;
     private final Timer timer;
     private Card curCard = null;
@@ -166,22 +156,6 @@ pic.setHeight(300);
 pic.setPosition(200, 150);
 
 n.attachChild(pic);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
         try {
@@ -279,22 +253,31 @@ lvl.attachChild(cardsNode);
 
     public void addzombie(int typ) {
         int row = FastMath.nextRandomInt(0, 4);
-        if (typ == 1 || true) {
+      
+        if (typ == 1 &&false) {
 
             zomb.add(new Zombie01(assetManager));
-            zomb.getLast().setRow(row);
+       
+        }
+        else if(typ==4||true)
+        {
+            
+            zomb.add(new Zombie04(assetManager));
+            
+        }
+        
+             zomb.getLast().setRow(row);
             lvl.attachChild(zomb.getLast().getNode());
             space.addAll(zomb.getLast().getNode());
             zomb.getLast().phyControl.setEnabled(false);
             zomb.getLast().getNode().setLocalTranslation(10 * side, 0, -side / 2 - side * row);
-            //   zomb.getLast().getNode().setLocalScale(0.05f, 0.05f, 0.05f);
-            zomb.getLast().getNode().rotate(0, 0, (float) Math.PI / 2);
+         
+            //zomb.getLast().getNode().rotate(0, 0, (float) Math.PI / 2);
 
             zomb.getLast().phyControl.setEnabled(true);
             hashingzombie.put(zomb.getLast().getNode(), zomb.getLast());
             hashingzombiecontrol.put(zomb.getLast().getControl(), zomb.getLast());
             zomb.getLast().getControl().addListener(this);
-        }
 
     }
 
@@ -566,7 +549,7 @@ lvl.attachChild(cardsNode);
                 System.out.println("Dooooooone");
 
             } catch (Exception e) {
-                System.out.println("saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaad");
+               
             }
 
         }
@@ -582,7 +565,7 @@ lvl.attachChild(cardsNode);
         for (int i = 0; i < results.size(); i++) {
             String hitName = results.getCollision(i).getGeometry().getName();
             float dis = results.getCollision(i).getDistance();
-            if (hitName.equals("Yaku_zombie1") && dis <= 6f) {
+            if (hitName.equals("zombie") && dis <= 6f) {
               try{
                 Zombie z=hashingzombie.get(results.getCollision(i).getGeometry().getParent());
                 bulletAppState.getPhysicsSpace().remove(z.getNode().getControl(RigidBodyControl.class));
@@ -606,15 +589,15 @@ lvl.attachChild(cardsNode);
         BitmapFont font = assetManager.loadFont("Interface/Fonts/Console.fnt");
 
         scoreText = new BitmapText(font);
-        scoreText.setSize(50);
+        scoreText.setSize(5);
 
         scoreText.setColor(ColorRGBA.Blue);
 
         scoreText.setText(Integer.toString(score));
-        guiNode.attachChild(scoreText);
+        lvl.attachChild(scoreText);
 
-      //  scoreText.setLocalTranslation(2f, 5, -26.5f);
-     //   scoreText.rotate(-(float) Math.PI / 2, 0, 0);
+        scoreText.setLocalTranslation(2f, 5, -26.5f);
+        scoreText.rotate(-(float) Math.PI / 2, 0, 0);
 
     }
 

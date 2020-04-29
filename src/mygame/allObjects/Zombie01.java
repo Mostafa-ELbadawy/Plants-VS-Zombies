@@ -15,15 +15,14 @@ import com.jme3.light.AmbientLight;
 
 public class Zombie01 extends Zombie 
 {
-private final AssetManager  assetManager;
 //private final AnimEventListener listener;`
      public Zombie01(AssetManager  asset ) {
        
          super(asset);
-        assetManager=asset;
+        
        
             Node node= (Node)assetManager.loadModel("Blender/zombie.j3o");
-            name="Yaku_zombie";
+            name="zombie";
             node=(Node)node.getChild(name);
             this.node=node;
         this.node.setName("zombie");

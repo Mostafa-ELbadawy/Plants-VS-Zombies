@@ -5,19 +5,15 @@
  */
 package mygame.allObjects;
 
-import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import java.util.HashMap;
 
 /**
@@ -30,7 +26,7 @@ public abstract class Attackers extends plant {
 
     public  Attackers(AssetManager asset) {
         super(asset);
-        attackPower = 10;
+        attackPower = 200;
         attackSpeed = 3;
         lastAttack = -1;
         effect=0;
@@ -43,17 +39,16 @@ public abstract class Attackers extends plant {
 
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 3, 0.25f), new Vector3f(1, 0, 0));
+        Ray sight = new Ray(node.getWorldTranslation().add(0, 5, 0.25f), new Vector3f(1, 0, 0));
 
         node.getParent().collideWith(sight, results);
         boolean isAttack = false;
         for (int i = 0; i < results.size(); i++) {
-            // For each hit, we know distance, impact point, name of geometry.
-
+       
             String hitName = results.getCollision(i).getGeometry().getName();
-            //    System.out.println("i= " + i + " name= " + hitName );
+       ///         System.out.println("i= " + i + " name= " + hitName );
 
-            if (hitName.equals("Yaku_zombie1")) {
+            if (hitName.equals("zombie")) {
                 isAttack = true;
                 break;
 
@@ -61,7 +56,7 @@ public abstract class Attackers extends plant {
 
         }
 
-        //  System.out.println("///////////////////////////////////////////////////////");
+    ///      System.out.println("///////////////////////////////////////////////////////");
         if (isAttack) {
             attack(timeNow, space, hashing);
         } else {
@@ -85,7 +80,7 @@ public abstract class Attackers extends plant {
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", ColorRGBA.Brown);
 
-            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 3f, 0));
+            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 5f, 0));
 
             hashing.put(bullet.getNode(), bullet);
             lastAttack = timeNow;

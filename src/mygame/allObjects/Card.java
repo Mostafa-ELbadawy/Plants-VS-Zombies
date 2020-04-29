@@ -102,9 +102,9 @@ public class Card {
     }
 
     private Geometry createCard(String pass) {
-        Box box = new Box( 20f,20f,20f);
+         Box box = new Box( 2f,2f,0.01f);
+      //  Box box = new Box( 20f,20f,20f);
        
-       //  Box box = new Box( 2f,2f,0.01f);
        //Quad box = new Quad(4, 4);
         Geometry cube = new Geometry("card", box);
 
@@ -191,8 +191,8 @@ public class Card {
             String pass = scan.next();
             Card card = new Card(typ, cost, -5, time, assetManager, pass);
             hashingCard.put(card.getNode(), card);
-          //  card.getNode().setLocalTranslation(ind*4+8f, 5f, -27);
-              card.getNode().setLocalTranslation(ind * 40+200 , 5, 40);
+           card.getNode().setLocalTranslation(ind*4+8f, 5f, -27);
+           ///   card.getNode().setLocalTranslation(ind * 40+200 , 5, 40);
             card.getPic().setPosition(ind * 40 +200, 200);
 
        //     card.getNode().rotate(-(float)Math.PI/2, 0, 0);

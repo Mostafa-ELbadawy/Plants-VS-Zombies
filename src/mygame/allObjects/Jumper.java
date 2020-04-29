@@ -68,7 +68,7 @@ public class Jumper  extends Attackers{
     {
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 3, 0.25f), new Vector3f(1, 0, 0));
+        Ray sight = new Ray(node.getWorldTranslation().add(0, 5, 0.25f), new Vector3f(1, 0, 0));
 
         node.getParent().collideWith(sight, results);
         boolean isAttack = false;
@@ -79,7 +79,7 @@ public class Jumper  extends Attackers{
             float dis=results.getCollision(i).getDistance();
 //    System.out.println("i= " + i + " name= " + hitName );
 
-            if (hitName.equals("Yaku_zombie1")&&dis<=5f) {
+            if (hitName.equals("zombie")&&dis<=5f) {
                 isAttack = true;
                 break;
 
