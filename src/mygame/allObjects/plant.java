@@ -10,9 +10,7 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-
 import com.jme3.bullet.control.RigidBodyControl;
-
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import java.util.HashMap;
@@ -20,6 +18,9 @@ import java.util.HashMap;
  *
  * @author DELL
  */
+
+
+
 public abstract  class plant {
 
     protected final AssetManager assetManager;

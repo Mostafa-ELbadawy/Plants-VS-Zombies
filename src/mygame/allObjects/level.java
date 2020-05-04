@@ -72,8 +72,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private Spatial scane;
     private LinkedList<Zombie> zomb;
     private LinkedList<plant> plan;
+    private LinkedList<Car> cars;
+    private LinkedList<Sun> sunsVector;
+    
+    
     private ArrayList<Card> cardsVector;
 
+    private HashMap<Geometry, Sun> hashingSun;
     private HashMap<Geometry, Bullet> hashing;
     private HashMap<Geometry, Card> hashingCard;
     private HashMap<Node, Zombie> hashingzombie;
@@ -133,10 +138,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         addzombie(1);
         /////////////////////////////////////////////////////////////////////////////////
 
-        //bulletAppState.setDebugEnabled(true);
+       // bulletAppState.setDebugEnabled(true);
         space.setGravity(Vector3f.ZERO);
+        //space.setGravity(new Vector3f(0, 10,0));
         space.addCollisionListener(this);
 
+        
+        
         //  camera.setLocation(new Vector3f(0.34607443f, 46.688816f, 33.021984f));
         //  camera.setRotation(new Quaternion(0.011682421f, 0.8854312f, -0.46462032f, 0.0017531696f));
         camera.setLocation(new Vector3f(10.465846f, 50.21445f, 5.6196184f));
@@ -147,15 +155,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
 
 
-Node n=new Node("test");
-//guiNode.attachChild(n);
-Picture pic = new Picture("HUD Picture");
-pic.setImage(assetManager, "Blender/wall1.png", true);
-pic.setWidth(400);
-pic.setHeight(300);
-pic.setPosition(200, 150);
-
-n.attachChild(pic);
+        addSun(new Vector3f(20, 20, -20));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
         try {
@@ -189,6 +189,7 @@ lvl.attachChild(cardsNode);
         attackAllPlanet(tpf);
         checkqueue();
         checkAllCards();
+        checkAllCars(tpf);
 
         scoreText.setText(Integer.toString(score));
         if (dead) {
@@ -228,12 +229,24 @@ lvl.attachChild(cardsNode);
 
     }
 
+    public void  checkAllCars(float tpf) {
+        for (int i = 0; i < cars.size(); i++) {
+          if( cars.get(i).setstatus(tpf))
+          {
+              killFrontZombies(cars.get(i).getNode().getLocalTranslation());
+              
+          }
+        }
+
+    }
     public void checkAllCards() {
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsVector.get(i).checkColor(timer.getTimeInSeconds(), curCard);
         }
 
     }
+    
+    
 
     public void initAllObject() {
         inivar();
@@ -241,8 +254,27 @@ lvl.attachChild(cardsNode);
         initFloor();
         initScoreText();
         initHome();
+        initcars();
     }
 
+    private  void initcars()
+    {
+        
+        for(int i=0;i<5;i++)
+        {
+            Car car=new Car(assetManager);
+           
+           
+            space.add(car.getPhyControl());
+            lvl.attachChild(car.getNode());
+            cars.add(car);
+           car.getPhyControl().setEnabled(false);
+            car.getNode().setLocalTranslation(new Vector3f(-1.5f* side + side / 2, 0, -side / 2 - side * i));
+            car.getPhyControl().setEnabled(true);
+        }
+    }
+    
+    
     public boolean is_valid(int x, int y) {
 
         if (x < 0 || x > 4 || y < 0 || y > 8) {
@@ -254,7 +286,7 @@ lvl.attachChild(cardsNode);
     public void addzombie(int typ) {
         int row = FastMath.nextRandomInt(0, 4);
       
-        if (typ == 1 &&false) {
+        if (typ == 1 ) {
 
             zomb.add(new Zombie01(assetManager));
        
@@ -280,6 +312,21 @@ lvl.attachChild(cardsNode);
             zomb.getLast().getControl().addListener(this);
 
     }
+public void addSun(Vector3f v) {
+
+    
+    sunsVector.add(new Sun(assetManager));
+    Sun newsun=sunsVector.getLast();
+    lvl.attachChild(newsun.getNode());
+    space.add(newsun.getNode());
+    newsun.getPhyControl().setEnabled(false);
+    newsun.getNode().setLocalTranslation(v);
+    hashingSun.put(newsun.getNode(), newsun);
+    newsun.getPhyControl().setEnabled(true);
+    
+
+}
+
 
     public void addplant(Vector3f v) {
 
@@ -324,10 +371,14 @@ lvl.attachChild(cardsNode);
     private void inivar() {
         zomb = new LinkedList<>();
         plan = new LinkedList<>();
+        cars=new LinkedList<>();
+        sunsVector=new LinkedList<>();
+        
         cardsVector = new ArrayList<>();
         
         
         hashing = new HashMap<>();
+        hashingSun = new HashMap<>();
         hashingCard = new HashMap<>();
         hashingzombiecontrol = new HashMap<>();
         hashingzombie = new HashMap<>();
@@ -348,7 +399,7 @@ lvl.attachChild(cardsNode);
     @Override
     public void collision(PhysicsCollisionEvent event) {
 
-        //   System.out.println(event.getNodeA().getName() + " hit " + event.getNodeB().getName());
+           System.out.println(event.getNodeA().getName() + " hit " + event.getNodeB().getName());
         if (zomb.size() > 0) {
 
             if ((event.getNodeA().getName().equals("zombie") && event.getNodeB().getName().equals("bullet")) || (event.getNodeB().getName().equals("zombie") && event.getNodeA().getName().equals("bullet"))) {
@@ -466,6 +517,11 @@ lvl.attachChild(cardsNode);
                     }
                     //  System.out.println("#card = " +curCard.toString()+" typ=  "+curCard.getTyp());   
                 }
+                else if(hitName.equals("sun"))
+                {
+                    removeSun(results.getCollision(i).getGeometry());
+                    
+                }
 
             }
 
@@ -473,6 +529,19 @@ lvl.attachChild(cardsNode);
         System.out.println("v= " + v.toString());
         return v;
 
+    }
+    private  void removeSun(Geometry G)
+    {
+        try {
+           
+          Sun sun=  hashingSun.get(G);
+          score+=sun.getScore();
+          lvl.detachChild(sun.getNode());
+          space.remove(sun.getPhyControl());
+          
+        } catch (Exception e) {
+        }
+        
     }
 
     private void initKeys() {
@@ -495,6 +564,7 @@ lvl.attachChild(cardsNode);
     }
 
     private void initFloor() {
+        
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 //            mat.setColor("Color", ColorRGBA.Green);
 
@@ -516,7 +586,7 @@ lvl.attachChild(cardsNode);
         Box HomeBox = new Box(26, 15, 18);
         Geometry HomeGeometry = new Geometry("Home", HomeBox);
         HomeGeometry.setMaterial(mat);
-        HomeGeometry.setLocalTranslation(-27, 10, -15);
+        HomeGeometry.setLocalTranslation(-35, 10, -15);
         lvl.attachChild(HomeGeometry);
         //floorGeometry.addControl(new RigidBodyControl(0));
         //  space.add(floorGeometry);
@@ -559,7 +629,7 @@ lvl.attachChild(cardsNode);
     private void killFrontZombies(Vector3f pos) {
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(pos.add(0, 3, 0.25f), new Vector3f(1, 0, 0));
+        Ray sight = new Ray(pos.add(0, 5, 0.25f), new Vector3f(1, 0, 0));
 
         lvl.collideWith(sight, results);
         for (int i = 0; i < results.size(); i++) {
@@ -573,6 +643,7 @@ lvl.attachChild(cardsNode);
                 zomb.remove(z);
                 hashingzombie.remove(z.getNode(), z);
                 hashingzombiecontrol.remove(z.getControl(),z);
+              
               }catch (Exception e) {
                 System.out.println("zombie dell");
             }   
@@ -601,6 +672,7 @@ lvl.attachChild(cardsNode);
 
     }
 
+    
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 

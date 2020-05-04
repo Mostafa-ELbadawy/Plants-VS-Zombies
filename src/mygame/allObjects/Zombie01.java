@@ -20,7 +20,6 @@ public class Zombie01 extends Zombie
        
          super(asset);
         
-       
             Node node= (Node)assetManager.loadModel("Blender/zombie.j3o");
             name="zombie";
             node=(Node)node.getChild(name);
