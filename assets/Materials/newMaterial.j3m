@@ -1,5 +1,10 @@
 Material My Material : Common/MatDefs/Misc/Unshaded.j3md {
      MaterialParameters {
+        VertexColor : false
+        SeparateTexCoord : false
+        UseInstancing : false
+        ColorMap : "Blender/wall3.png"
+        LightMap : "Blender/wall2.png"
      }
     AdditionalRenderState {
     }

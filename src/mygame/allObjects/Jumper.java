@@ -28,7 +28,7 @@ public class Jumper  extends Attackers{
         super(asset);
         
      
-        Node node = (Node) assetManager.loadModel("Blender/plant.j3o");
+        Node node = (Node) assetManager.loadModel("Blender/Green_plant/plant.j3o");
         this.node = node;
          this.node.setName("plant");
          node.setLocalScale(5f);

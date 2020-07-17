@@ -25,7 +25,7 @@ public class Potato extends  Defenders{
       
         setHealth(150);
         
-        Node node = (Node) assetManager.loadModel("Blender/photoes2.j3o");
+        Node node = (Node) assetManager.loadModel("Blender/potato/potato.j3o");
         this.node = node;
          this.node.setName("plant");
 

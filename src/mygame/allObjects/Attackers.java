@@ -37,6 +37,7 @@ public abstract class Attackers extends plant {
     @Override
     public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
 
+        
         CollisionResults results = new CollisionResults();
 
         Ray sight = new Ray(node.getWorldTranslation().add(0, 5, 0.25f), new Vector3f(1, 0, 0));
@@ -63,6 +64,7 @@ public abstract class Attackers extends plant {
             idel();
         }
 
+        idel();
     }
 
     public float getLastAttack() {
