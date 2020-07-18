@@ -30,29 +30,34 @@ public class Sun {
     private Geometry node;
     private float score;
     private RigidBodyControl phyControl;
-   private AssetManager assetManager;
 
-    public Sun(AssetManager assetManager) {
-          this(25,assetManager);
+    private static AssetManager assetManager;
+    private static LinkedList<Sun> sunsVector;
+    private static Node lvl;
+    private static PhysicsSpace space;
+    private static HashMap<Geometry, Sun> hashingSun;
+
+    public Sun() {
+        this(25);
     }
-    public Sun(float score,AssetManager assetManager) {
-        this.assetManager = assetManager;
+
+    public Sun(float score) {
+
         this.score = score;
         Sphere sun = new Sphere(32, 32, 1f, true, false);
         sun.setTextureMode(Sphere.TextureMode.Projected);
-        
+
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-           mat.setColor("Color", ColorRGBA.Yellow);
-           node = new Geometry("sun", sun);
-           node.setMaterial(mat);
-        phyControl = new RigidBodyControl(5);
-  
+        mat.setColor("Color", ColorRGBA.Yellow);
+        node = new Geometry("sun", sun);
+        node.setMaterial(mat);
+        phyControl = new RigidBodyControl(15);
 
         // phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);  
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         this.node.addControl(phyControl);
-        phyControl.setLinearVelocity(new Vector3f(0,-5, 0));
+        phyControl.setLinearVelocity(new Vector3f(0, -5, 0));
     }
 
     public Geometry getNode() {
@@ -78,6 +83,45 @@ public class Sun {
     public void setPhyControl(RigidBodyControl phyControl) {
         this.phyControl = phyControl;
     }
+
+    public static void addSun(Vector3f v) {
+
+        sunsVector.add(new Sun());
+        Sun newsun = sunsVector.getLast();
+        lvl.attachChild(newsun.getNode());
+        space.add(newsun.getNode());
+        newsun.getPhyControl().setEnabled(false);
+        newsun.getNode().setLocalTranslation(v);
+        hashingSun.put(newsun.getNode(), newsun);
+        newsun.getPhyControl().setEnabled(true);
+
+    }
+
+    public static float removeSun(Geometry G) {
+        try {
+
+            Sun sun = hashingSun.get(G);
+            lvl.detachChild(sun.getNode());
+            space.remove(sun.getPhyControl());
+            hashingSun.remove(G);
+            sunsVector.remove(sun);
+            return sun.getScore();
+
+        } catch (Exception e) {
+            return 0;
+        }
+
+    }
+    public static void initStaticSun(AssetManager assetManager,LinkedList<Sun> sunsVector,Node lvl,PhysicsSpace space,HashMap<Geometry, Sun> hashingSun)
+    {  
+        Sun.assetManager = assetManager;
+        Sun.sunsVector = sunsVector;
+        Sun.lvl = lvl;
+        Sun.hashingSun = hashingSun;
+        Sun.space = space;
+    }
+
+    
     
     
 }

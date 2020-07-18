@@ -5,7 +5,6 @@
  */
 package mygame.allObjects;
 
-
 import addetions.pair;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -63,7 +62,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private final SimpleApplication app;
     private final Camera camera;
     private final FlyByCamera flyByCamera;
-    private final Node root,guiNode;
+    private final Node root, guiNode;
     private Node lvl;
     protected final AssetManager assetManager;
     private final InputManager inputManager;
@@ -74,8 +73,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private LinkedList<plant> plan;
     private LinkedList<Car> cars;
     private LinkedList<Sun> sunsVector;
-    
-    
+
     private ArrayList<Card> cardsVector;
 
     private HashMap<Geometry, Sun> hashingSun;
@@ -108,9 +106,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         inputManager = app.getInputManager();
         timer = app.getTimer();
         app.getStateManager();
-      guiNode=app.getGuiNode();
-      
-      this.app = app;
+        guiNode = app.getGuiNode();
+
+        this.app = app;
 
     }
 
@@ -138,13 +136,11 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         addzombie(1);
         /////////////////////////////////////////////////////////////////////////////////
 
-       // bulletAppState.setDebugEnabled(true);
+        // bulletAppState.setDebugEnabled(true);
         space.setGravity(Vector3f.ZERO);
         //space.setGravity(new Vector3f(0, 10,0));
         space.addCollisionListener(this);
 
-        
-        
         //  camera.setLocation(new Vector3f(0.34607443f, 46.688816f, 33.021984f));
         //  camera.setRotation(new Quaternion(0.011682421f, 0.8854312f, -0.46462032f, 0.0017531696f));
         camera.setLocation(new Vector3f(10.465846f, 50.21445f, 5.6196184f));
@@ -152,10 +148,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         // flyByCamera.setEnabled(false);
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-        addSun(new Vector3f(20, 20, -20));
+        initStaticSun();
+        Sun.addSun(new Vector3f(20, 20, -20));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
         try {
@@ -166,15 +160,15 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             System.out.println("exxxxxxxxxxxxxxxxxxxxx");
         }
 
-guiNode.addLight(new AmbientLight());
-Node cardsNode=new Node("cards");
+        guiNode.addLight(new AmbientLight());
+        Node cardsNode = new Node("cards");
 //cardsNode.setLocalTranslation(50, 50, 1);
-lvl.attachChild(cardsNode);
+        lvl.attachChild(cardsNode);
 
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsNode.attachChild(cardsVector.get(i).getNode());
-          //  guiNode.attachChild(cardsVector.get(i).getPic());
-  
+            //  guiNode.attachChild(cardsVector.get(i).getPic());
+
         }
 //        cardsNode.updateGeometricState();
 
@@ -193,7 +187,7 @@ lvl.attachChild(cardsNode);
 
         scoreText.setText(Integer.toString(score));
         if (dead) {
-         //   System.out.println("Dead");
+            //   System.out.println("Dead");
         }
 
     }
@@ -229,24 +223,22 @@ lvl.attachChild(cardsNode);
 
     }
 
-    public void  checkAllCars(float tpf) {
+    public void checkAllCars(float tpf) {
         for (int i = 0; i < cars.size(); i++) {
-          if( cars.get(i).setstatus(tpf))
-          {
-              killFrontZombies(cars.get(i).getNode().getLocalTranslation());
-              
-          }
+            if (cars.get(i).setstatus(tpf)) {
+                killFrontZombies(cars.get(i).getNode().getLocalTranslation());
+
+            }
         }
 
     }
+
     public void checkAllCards() {
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsVector.get(i).checkColor(timer.getTimeInSeconds(), curCard);
         }
 
     }
-    
-    
 
     public void initAllObject() {
         inivar();
@@ -257,24 +249,20 @@ lvl.attachChild(cardsNode);
         initcars();
     }
 
-    private  void initcars()
-    {
-        
-        for(int i=0;i<5;i++)
-        {
-            Car car=new Car(assetManager);
-           
-           
+    private void initcars() {
+
+        for (int i = 0; i < 5; i++) {
+            Car car = new Car(assetManager);
+
             space.add(car.getPhyControl());
             lvl.attachChild(car.getNode());
             cars.add(car);
-           car.getPhyControl().setEnabled(false);
-            car.getNode().setLocalTranslation(new Vector3f(-1.5f* side + side / 2, 0, -side / 2 - side * i));
+            car.getPhyControl().setEnabled(false);
+            car.getNode().setLocalTranslation(new Vector3f(-1.5f * side + side / 2, 0, -side / 2 - side * i));
             car.getPhyControl().setEnabled(true);
         }
     }
-    
-    
+
     public boolean is_valid(int x, int y) {
 
         if (x < 0 || x > 4 || y < 0 || y > 8) {
@@ -285,48 +273,30 @@ lvl.attachChild(cardsNode);
 
     public void addzombie(int typ) {
         int row = FastMath.nextRandomInt(0, 4);
-      
-        if (typ == 1 ) {
+
+        if (typ == 1) {
 
             zomb.add(new Zombie01(assetManager));
-       
-        }
-        else if(typ==4||true)
-        {
-            
-            zomb.add(new Zombie04(assetManager));
-            
-        }
-        
-             zomb.getLast().setRow(row);
-            lvl.attachChild(zomb.getLast().getNode());
-            space.addAll(zomb.getLast().getNode());
-            zomb.getLast().phyControl.setEnabled(false);
-            zomb.getLast().getNode().setLocalTranslation(10 * side, 0, -side / 2 - side * row);
-         
-            //zomb.getLast().getNode().rotate(0, 0, (float) Math.PI / 2);
 
-            zomb.getLast().phyControl.setEnabled(true);
-            hashingzombie.put(zomb.getLast().getNode(), zomb.getLast());
-            hashingzombiecontrol.put(zomb.getLast().getControl(), zomb.getLast());
-            zomb.getLast().getControl().addListener(this);
+        } else if (typ == 4 || true) {
+
+            zomb.add(new Zombie04(assetManager));
+
+        }
+
+        zomb.getLast().setRow(row);
+        lvl.attachChild(zomb.getLast().getNode());
+        space.addAll(zomb.getLast().getNode());
+        zomb.getLast().phyControl.setEnabled(false);
+        zomb.getLast().getNode().setLocalTranslation(10 * side, 0, -side / 2 - side * row);
+
+        //zomb.getLast().getNode().rotate(0, 0, (float) Math.PI / 2);
+        zomb.getLast().phyControl.setEnabled(true);
+        hashingzombie.put(zomb.getLast().getNode(), zomb.getLast());
+        hashingzombiecontrol.put(zomb.getLast().getControl(), zomb.getLast());
+        zomb.getLast().getControl().addListener(this);
 
     }
-public void addSun(Vector3f v) {
-
-    
-    sunsVector.add(new Sun(assetManager));
-    Sun newsun=sunsVector.getLast();
-    lvl.attachChild(newsun.getNode());
-    space.add(newsun.getNode());
-    newsun.getPhyControl().setEnabled(false);
-    newsun.getNode().setLocalTranslation(v);
-    hashingSun.put(newsun.getNode(), newsun);
-    newsun.getPhyControl().setEnabled(true);
-    
-
-}
-
 
     public void addplant(Vector3f v) {
 
@@ -335,15 +305,15 @@ public void addSun(Vector3f v) {
             return;
         }
         if (is_valid(row, col) && curCard.getCost() <= score) {
-            
-            
-            
-            
+
             if (curCard.getTyp() == 1) {
-                
+
                 plan.add(new Grean_Plant(assetManager));
             } else if (curCard.getTyp() == 2) {
                 plan.add(new Potato(assetManager));
+            } else if (curCard.getTyp() == 3) {
+                plan.add(new SunFlower(assetManager));
+
             } else if (curCard.getTyp() == 6) {
                 plan.add(new Jumper(assetManager));
                 hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());
@@ -371,19 +341,18 @@ public void addSun(Vector3f v) {
     private void inivar() {
         zomb = new LinkedList<>();
         plan = new LinkedList<>();
-        cars=new LinkedList<>();
-        sunsVector=new LinkedList<>();
-        
+        cars = new LinkedList<>();
+        sunsVector = new LinkedList<>();
+
         cardsVector = new ArrayList<>();
-        
-        
+
         hashing = new HashMap<>();
         hashingSun = new HashMap<>();
         hashingCard = new HashMap<>();
         hashingzombiecontrol = new HashMap<>();
         hashingzombie = new HashMap<>();
-        hashingplant = new HashMap<>(); 
-        hashingPlantcontrol=new HashMap<>();
+        hashingplant = new HashMap<>();
+        hashingPlantcontrol = new HashMap<>();
         lvl = new Node("level1");
         //lvl=root;
         floor = new plant[6][10];
@@ -399,7 +368,7 @@ public void addSun(Vector3f v) {
     @Override
     public void collision(PhysicsCollisionEvent event) {
 
-           System.out.println(event.getNodeA().getName() + " hit " + event.getNodeB().getName());
+       /// System.out.println(event.getNodeA().getName() + " hit " + event.getNodeB().getName());
         if (zomb.size() > 0) {
 
             if ((event.getNodeA().getName().equals("zombie") && event.getNodeB().getName().equals("bullet")) || (event.getNodeB().getName().equals("zombie") && event.getNodeA().getName().equals("bullet"))) {
@@ -462,10 +431,10 @@ public void addSun(Vector3f v) {
                     }
                 }
                  */
-                
+
                 flyByCamera.setEnabled(!flyByCamera.isEnabled());
                 inputManager.setCursorVisible(flyByCamera.isEnabled());
-    
+
             } else if (name.equals("Z") && !keyPressed) {
                 int r = rand.nextInt();
                 if (r < 0) {
@@ -495,7 +464,7 @@ public void addSun(Vector3f v) {
         CollisionResults results = new CollisionResults();
         // 3. Collect intersections between Ray and Shootables in results list.
         lvl.collideWith(ray, results);
-        System.out.println("size= " + results.size());
+        ///System.out.println("size= " + results.size());
         // 5. Use the results (we mark the hit object)
         if (results.size() > 0) {
             for (int i = 0; i < results.size(); i++) {
@@ -510,17 +479,15 @@ public void addSun(Vector3f v) {
                     v = results.getCollision(i).getContactPoint();
                     //   break;
                 } else if (hitName.equals("card")) {
-                     System.out.println("ya rab");
+                    System.out.println("ya rab");
                     curCard = hashingCard.get(results.getCollision(i).getGeometry());
                     if (!curCard.isValid(timer.getTimeInSeconds())) {
                         curCard = null;
                     }
                     //  System.out.println("#card = " +curCard.toString()+" typ=  "+curCard.getTyp());   
-                }
-                else if(hitName.equals("sun"))
-                {
-                    removeSun(results.getCollision(i).getGeometry());
-                    
+                } else if (hitName.equals("sun")) {
+                    score += Sun.removeSun(results.getCollision(i).getGeometry());
+
                 }
 
             }
@@ -529,19 +496,6 @@ public void addSun(Vector3f v) {
         System.out.println("v= " + v.toString());
         return v;
 
-    }
-    private  void removeSun(Geometry G)
-    {
-        try {
-           
-          Sun sun=  hashingSun.get(G);
-          score+=sun.getScore();
-          lvl.detachChild(sun.getNode());
-          space.remove(sun.getPhyControl());
-          
-        } catch (Exception e) {
-        }
-        
     }
 
     private void initKeys() {
@@ -564,7 +518,7 @@ public void addSun(Vector3f v) {
     }
 
     private void initFloor() {
-        
+
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 //            mat.setColor("Color", ColorRGBA.Green);
 
@@ -602,7 +556,7 @@ public void addSun(Vector3f v) {
                 z.getNode().getParent().detachChild(z.getNode());
                 zomb.remove(z);
                 hashingzombie.remove(z.getNode(), z);
-                hashingzombiecontrol.remove(z.getControl(),z);
+                hashingzombiecontrol.remove(z.getControl(), z);
 
             } catch (Exception e) {
             }
@@ -614,12 +568,12 @@ public void addSun(Vector3f v) {
                 lvl.detachChild(p.getNode());
                 plan.remove(p);
                 hashingplant.remove(p.getNode(), p);
-                hashingPlantcontrol.remove(p.getControl(),p);
+                hashingPlantcontrol.remove(p.getControl(), p);
                 space.remove(p.phyControl);
                 System.out.println("Dooooooone");
 
             } catch (Exception e) {
-               
+
             }
 
         }
@@ -636,27 +590,28 @@ public void addSun(Vector3f v) {
             String hitName = results.getCollision(i).getGeometry().getName();
             float dis = results.getCollision(i).getDistance();
             if (hitName.equals("zombie") && dis <= 6f) {
-              try{
-                Zombie z=hashingzombie.get(results.getCollision(i).getGeometry().getParent());
-                bulletAppState.getPhysicsSpace().remove(z.getNode().getControl(RigidBodyControl.class));
-                z.getNode().getParent().detachChild(z.getNode());
-                zomb.remove(z);
-                hashingzombie.remove(z.getNode(), z);
-                hashingzombiecontrol.remove(z.getControl(),z);
-              
-              }catch (Exception e) {
-                System.out.println("zombie dell");
-            }   
+                try {
+                    Zombie z = hashingzombie.get(results.getCollision(i).getGeometry().getParent());
+                    bulletAppState.getPhysicsSpace().remove(z.getNode().getControl(RigidBodyControl.class));
+                    z.getNode().getParent().detachChild(z.getNode());
+                    zomb.remove(z);
+                    hashingzombie.remove(z.getNode(), z);
+                    hashingzombiecontrol.remove(z.getControl(), z);
+
+                } catch (Exception e) {
+                    System.out.println("zombie dell");
+                }
 
             }
-            if(dis>6)
+            if (dis > 6) {
                 break;
+            }
 
         }
 
     }
 
-    void initScoreText() {
+    private void initScoreText() {
         BitmapFont font = assetManager.loadFont("Interface/Fonts/Console.fnt");
 
         scoreText = new BitmapText(font);
@@ -672,18 +627,13 @@ public void addSun(Vector3f v) {
 
     }
 
-    
+    private void initStaticSun() {
+        Sun.initStaticSun(assetManager, sunsVector, lvl, space, hashingSun);
+    }
+
     @Override
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 
     }
 
-    
 }
-    
-    
-    
-    
-    
-    
-    

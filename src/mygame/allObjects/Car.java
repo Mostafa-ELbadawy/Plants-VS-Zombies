@@ -99,13 +99,13 @@ public class Car {
         Ray sight = new Ray(node.getWorldTranslation().add(0, 5, 0.25f), new Vector3f(1, 0, 0));
         node.getParent().collideWith(sight, results);
 
-        System.out.println("**********************************************");
+      ///  System.out.println("**********************************************");
                
         for (int i = 0; i < results.size(); i++) {
         
             String hitName = results.getCollision(i).getGeometry().getName();
             float dist = results.getCollision(i).getDistance();
-               System.out.println("hit " +hitName);
+         ///      System.out.println("hit " +hitName);
                
             if (hitName.equals("zombie") && dist < 5f) {
               move(tpf);
