@@ -51,7 +51,7 @@ public class Jumper extends Attackers {
     @Override
     public void attack(float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
 
-        if (!channal.getAnimationName().equals("attacking")) {
+        if (channal.getAnimationName()==null||!channal.getAnimationName().equals("attacking")) {
             channal.setAnim("attacking");
             channal.setLoopMode(LoopMode.DontLoop);
         }

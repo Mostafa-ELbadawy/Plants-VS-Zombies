@@ -37,12 +37,12 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
-import com.jme3.ui.Picture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -73,6 +73,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private LinkedList<plant> plan;
     private LinkedList<Car> cars;
     private LinkedList<Sun> sunsVector;
+    private LinkedList<BombEffect> bombVector;
 
     private ArrayList<Card> cardsVector;
 
@@ -83,6 +84,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private HashMap<Node, plant> hashingplant;
     private HashMap<AnimControl, Zombie> hashingzombiecontrol;
     private HashMap<AnimControl, plant> hashingPlantcontrol;
+
+    PriorityQueue<pair> pq;
 
     private BitmapText scoreText;
 
@@ -95,8 +98,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private boolean dead = false;
     float right = 0, up = 0;
     private boolean mov = false;
-    PriorityQueue<pair> pq;
     // public level(AssetManager ass) {
+    private final RenderManager renderManager;
 
     public level(SimpleApplication app) {
         camera = app.getCamera();
@@ -107,6 +110,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         timer = app.getTimer();
         app.getStateManager();
         guiNode = app.getGuiNode();
+        renderManager = app.getRenderManager();
 
         this.app = app;
 
@@ -184,6 +188,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         checkqueue();
         checkAllCards();
         checkAllCars(tpf);
+        checkAllBombs();
 
         scoreText.setText(Integer.toString(score));
         if (dead) {
@@ -197,6 +202,18 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             System.out.println("zomp at " + pq.peek().first + " type " + pq.poll().second);
 
         }
+    }
+
+    public void checkAllBombs() {
+       /// System.out.println("bomb counter= "+bombVector.size());
+        for (int i = 0; i < bombVector.size(); i++) {
+            if (bombVector.get(i).isBoom(timer.getTimeInSeconds())) {
+                lvl.detachChild(bombVector.get(i).getNode());
+
+                bombVector.remove(i--);
+            }
+        }
+
     }
 
     private void checkqueue() {
@@ -263,7 +280,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         }
     }
 
-    public boolean is_valid(int x, int y) {
+    private boolean is_valid(int x, int y) {
 
         if (x < 0 || x > 4 || y < 0 || y > 8) {
             return false;
@@ -271,7 +288,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         return floor[x][y] == null;
     }
 
-    public void addzombie(int typ) {
+    private void addzombie(int typ) {
         int row = FastMath.nextRandomInt(0, 4);
 
         if (typ == 1) {
@@ -298,7 +315,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    public void addplant(Vector3f v) {
+    private void addplant(Vector3f v) {
 
         int col = (int) (v.x / side), row = (int) -(v.z / side);
         if (curCard == null) {
@@ -307,13 +324,16 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         if (is_valid(row, col) && curCard.getCost() <= score) {
 
             if (curCard.getTyp() == 1) {
-
                 plan.add(new Grean_Plant(assetManager));
             } else if (curCard.getTyp() == 2) {
                 plan.add(new Potato(assetManager));
             } else if (curCard.getTyp() == 3) {
                 plan.add(new SunFlower(assetManager));
 
+            } else if (curCard.getTyp() == 5) {
+                plan.add(new Bomb(assetManager));
+                hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());
+                plan.getLast().getControl().addListener(this);
             } else if (curCard.getTyp() == 6) {
                 plan.add(new Jumper(assetManager));
                 hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());
@@ -343,6 +363,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         plan = new LinkedList<>();
         cars = new LinkedList<>();
         sunsVector = new LinkedList<>();
+        bombVector = new LinkedList<>();
 
         cardsVector = new ArrayList<>();
 
@@ -368,7 +389,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     @Override
     public void collision(PhysicsCollisionEvent event) {
 
-       /// System.out.println(event.getNodeA().getName() + " hit " + event.getNodeB().getName());
+        /// System.out.println(event.getNodeA().getName() + " hit " + event.getNodeB().getName());
         if (zomb.size() > 0) {
 
             if ((event.getNodeA().getName().equals("zombie") && event.getNodeB().getName().equals("bullet")) || (event.getNodeB().getName().equals("zombie") && event.getNodeA().getName().equals("bullet"))) {
@@ -550,32 +571,38 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     @Override
     public void onAnimCycleDone(AnimControl control, AnimChannel channel, String animName) {
 
-        if (animName.equals("dying")) {
-            try {
+        try {
+            if (animName.equals("dying")) {
                 Zombie z = hashingzombiecontrol.get(control);
                 z.getNode().getParent().detachChild(z.getNode());
                 zomb.remove(z);
                 hashingzombie.remove(z.getNode(), z);
                 hashingzombiecontrol.remove(z.getControl(), z);
 
-            } catch (Exception e) {
-            }
-
-        } else if (animName.equals("attacking")) {
-            try {
+            } else if (animName.equals("attacking")) {
                 plant p = hashingPlantcontrol.get(control);
-                killFrontZombies(p.getNode().getLocalTranslation());
                 lvl.detachChild(p.getNode());
                 plan.remove(p);
                 hashingplant.remove(p.getNode(), p);
                 hashingPlantcontrol.remove(p.getControl(), p);
+                floor [p.getRow()][p.getCol()]=null;
                 space.remove(p.phyControl);
-                System.out.println("Dooooooone");
+                if (p instanceof Jumper) {
+                    killFrontZombies(p.getNode().getLocalTranslation());
+                } else if (p instanceof Bomb) {
+                    killAroundZombies(p.getNode().getLocalTranslation());
+                    bombVector.addLast(new BombEffect(assetManager));
+                        bombVector.getLast().getNode().setLocalTranslation(p.getNode().getLocalTranslation());
+                    lvl.attachChild(bombVector.getLast().getNode());
+                   renderManager.preloadScene(bombVector.getLast().getNode());
+                    
 
-            } catch (Exception e) {
+                }
+                
 
             }
-
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
     }
@@ -608,6 +635,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             }
 
         }
+
+    }
+
+    private void killAroundZombies(Vector3f pos) {
 
     }
 
