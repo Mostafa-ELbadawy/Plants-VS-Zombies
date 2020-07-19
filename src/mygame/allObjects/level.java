@@ -217,17 +217,18 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void checkqueue() {
-        while (!pq.isEmpty() && timer.getTimeInSeconds() >= pq.peek().first) {
-            addzombie(pq.poll().second);
+        return;
+       // while (!pq.isEmpty() && timer.getTimeInSeconds() >= pq.peek().first) {
+        //    addzombie(pq.poll().second);
 
-        }
+       // }
 
     }
 
     public void moveAllZombies(float tpf) {
         for (int i = 0; i < zomb.size(); i++) {
             if (!zomb.get(i).isDamaged()) {
-                dead = (zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space, floor) || dead);
+               dead = (zomb.get(i).setstatus(tpf, plan, hashingplant, timer.getTimeInSeconds(), space, floor) || dead);
             }
         }
 
@@ -295,7 +296,19 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
             zomb.add(new Zombie01(assetManager));
 
-        } else if (typ == 4 || true) {
+        }
+        else if (typ == 2 ) {
+
+          System.out.print("yyyyyyyyyyy");
+            zomb.add(new zombie02(assetManager));
+        }
+        
+        else if (typ == 3 ) {
+
+          System.out.print("loloooy");
+            zomb.add(new zombie03(assetManager));
+        }
+         else if (typ == 4||true ) {
 
             zomb.add(new Zombie04(assetManager));
 
@@ -466,7 +479,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 }
                 r %= 5;
                 System.out.println("row = " + r);
-                addzombie(1);
+                addzombie(2);
             } else if (name.equals("add") && !keyPressed) {
                 Vector3f pos = getMousePos();
                 addplant(pos);
