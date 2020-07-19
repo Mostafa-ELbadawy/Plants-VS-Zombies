@@ -330,6 +330,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             } else if (curCard.getTyp() == 3) {
                 plan.add(new SunFlower(assetManager));
 
+            }else if (curCard.getTyp() == 4) {
+                plan.add(new Frozzen_plant(assetManager));
+
             } else if (curCard.getTyp() == 5) {
                 plan.add(new Bomb(assetManager));
                 hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());

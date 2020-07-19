@@ -15,17 +15,18 @@ import com.jme3.scene.Node;
  *
  * @author DELL
  */
-public class Grean_Plant extends Attackers{
-    
-    private final AssetManager assetManager;   
-    public Grean_Plant (AssetManager asset) {
+public class Frozzen_plant extends Attackers {
+
+    private final AssetManager assetManager;
+
+    public Frozzen_plant(AssetManager asset) {
         super(asset);
         assetManager = asset;
-      
-        Node node = (Node) assetManager.loadModel("Blender/Green_plant/Green_plant.j3o");
+
+        Node node = (Node) assetManager.loadModel("Blender/frozzen_plant/frozzen_plant.j3o");
         this.node = node;
-         this.node.setName("plant");
-         node.setLocalScale(2.5f);
+        this.node.setName("plant");
+        node.setLocalScale(2.5f);
 
         name = "plant";
         Node zomb = (Node) node.getChild(name);
@@ -33,20 +34,17 @@ public class Grean_Plant extends Attackers{
         channal = control.createChannel();
         setEffect(-0.5f);
         setEffectTime(1.5f);
-        
-        
-           phyControl=new RigidBodyControl(0);
-          
-           phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-           phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-           phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        
 
-         this.node.addControl(phyControl);
-       // setCollisionShape(new BoxCollisionShape(node.getLocalScale()));
-        
+        phyControl = new RigidBodyControl(0);
+
+        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+
+        this.node.addControl(phyControl);
+        // setCollisionShape(new BoxCollisionShape(node.getLocalScale()));
 
         this.node.rotate(0, -(float) Math.PI / 2, 0);
     }
-    
+
 }

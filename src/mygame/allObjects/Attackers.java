@@ -64,7 +64,6 @@ public abstract class Attackers extends plant {
             idel();
         }
 
-        idel();
     }
 
     public float getLastAttack() {
@@ -82,7 +81,7 @@ public abstract class Attackers extends plant {
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", ColorRGBA.Brown);
 
-            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 5f, 0));
+            Bullet bullet = new Bullet(effect,attackPower,effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 3f, 0));
 
             hashing.put(bullet.getNode(), bullet);
             lastAttack = timeNow;
