@@ -1,8 +1,6 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import mygame.allObjects.level;
-import mygame.allObjects.level01;
 import mygame.allObjects.theGameMenu;
 
 
@@ -22,7 +20,9 @@ public class Main extends SimpleApplication{
     @Override
     public void simpleInitApp() {
 
-             stateManager.attach(new theGameMenu(this));
+           /// stateManager.attach(new level(this));
+   
+            stateManager.attach(new theGameMenu(this));
     }
 
 

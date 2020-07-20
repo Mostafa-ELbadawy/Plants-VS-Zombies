@@ -30,8 +30,8 @@ public class Zombie04  extends Zombie{
             name="zombie";
             node=(Node)node.getChild(name);
             this.node=node;
-            this.node.setName("zombie");
-            node.setLocalScale(0.05f, 0.05f, 0.05f);
+            
+            
             setAttackPower(30);
             setMovingSpeed(5);
             
@@ -42,8 +42,9 @@ public class Zombie04  extends Zombie{
          phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
          phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
        
-         
+            
          this.node.addControl(phyControl);
+         node=(Node)node.getChild("zombie2");
         
             control = node.getControl(AnimControl.class);
             channal=control.createChannel();

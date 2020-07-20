@@ -30,7 +30,8 @@ public abstract class Attackers extends plant {
         attackSpeed = 3;
         lastAttack = -1;
         effect=0;
-
+         setAttackPower(0);
+        
 
     }
 
@@ -40,14 +41,14 @@ public abstract class Attackers extends plant {
         
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 5, 0.25f), new Vector3f(1, 0, 0));
+        Ray sight = new Ray(node.getWorldTranslation().add(0, 5,0f), new Vector3f(1, 0, 0));
 
         node.getParent().collideWith(sight, results);
         boolean isAttack = false;
         for (int i = 0; i < results.size(); i++) {
        
             String hitName = results.getCollision(i).getGeometry().getName();
-       ///         System.out.println("i= " + i + " name= " + hitName );
+                //System.out.println("i= " + i + " name= " + hitName );
 
             if (hitName.equals("zombie")) {
                 isAttack = true;

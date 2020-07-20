@@ -11,10 +11,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.collision.CollisionResults;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import java.util.HashMap;
@@ -31,12 +27,12 @@ public class SunFlower extends Attackers{
         attackSpeed=6;
         
         
-        Node node = (Node) assetManager.loadModel("Blender/Green_plant/plant.j3o");
+        Node node = (Node) assetManager.loadModel("Blender/sun_flower/sun_flower.j3o");
         this.node = node;
          this.node.setName("plant");
-         node.setLocalScale(5f);
+         node.setLocalScale(3f);
 
-        name = "MocapGuy_Teeth";
+        name = "plant";
         Node zomb = (Node) node.getChild(name);
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();

@@ -5,20 +5,15 @@
  */
 package mygame.allObjects;
 
-import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import java.util.HashMap;
 
 /**
  *
@@ -89,7 +84,7 @@ public class BombEffect {
         flash.setStartColor(new ColorRGBA(1f, 0.8f, 0.36f, (float) (1f / COUNT_FACTOR_F)));
         flash.setEndColor(new ColorRGBA(1f, 0.8f, 0.36f, 0f));
         flash.setStartSize(.1f);
-        flash.setEndSize(3.0f);
+        flash.setEndSize(2.0f);
         flash.setShape(new EmitterSphereShape(Vector3f.ZERO, .05f));
         flash.setParticlesPerSec(0);
         flash.setGravity(0, 0, 0);
@@ -248,7 +243,6 @@ public class BombEffect {
 
     public boolean isBoom(float timeNow) {
        
-            System.out.println("Done0");
         if (state == 0) {   
             flash.emitAllParticles();
             spark.emitAllParticles();
@@ -257,18 +251,16 @@ public class BombEffect {
             shockwave.emitAllParticles();
             state++;
             lastupdate=timeNow;
-            System.out.println("Done1");
         }
            float time=timeNow-lastupdate;
-        if (time > 1.5f && state == 1) {
+        if (time > 0.2f && state == 1) {
             flame.emitAllParticles();
             roundspark.emitAllParticles();
             state++;
             
-            System.out.println("Done2");
         }
         // rewind the effect
-        if (time >2.5f  && state == 2) {
+        if (time >1f  && state == 2) {
             
             flash.killAllParticles();
             spark.killAllParticles();
@@ -278,7 +270,6 @@ public class BombEffect {
             roundspark.killAllParticles();
             shockwave.killAllParticles();
             
-            System.out.println("removed");
             return true;     
         }
         return false;

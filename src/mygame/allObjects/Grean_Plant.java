@@ -21,7 +21,6 @@ public class Grean_Plant extends Attackers{
     public Grean_Plant (AssetManager asset) {
         super(asset);
         assetManager = asset;
-      
         Node node = (Node) assetManager.loadModel("Blender/Green_plant/Green_plant.j3o");
         this.node = node;
          this.node.setName("plant");
@@ -31,8 +30,10 @@ public class Grean_Plant extends Attackers{
         Node zomb = (Node) node.getChild(name);
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
+        
         setEffect(-0.5f);
         setEffectTime(1.5f);
+        setAttackPower(0);
         
         
            phyControl=new RigidBodyControl(0);

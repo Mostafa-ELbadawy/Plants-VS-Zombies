@@ -24,11 +24,9 @@ public class Zombie01 extends Zombie
             name="zombie";
             node=(Node)node.getChild(name);
             this.node=node;
-        this.node.setName("zombie");
-          node.setLocalScale(0.05f, 0.05f, 0.05f);
-       
+            
             this.node.addLight(new AmbientLight());
-         phyControl=new RigidBodyControl(0);
+             phyControl=new RigidBodyControl(0);
         // phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);  
         
          phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
@@ -36,7 +34,8 @@ public class Zombie01 extends Zombie
        
          
          this.node.addControl(phyControl);
-        
+        node=(Node)node.getChild("zombie2");
+            
             control = node.getControl(AnimControl.class);
             channal=control.createChannel();
          phyControl.activate();

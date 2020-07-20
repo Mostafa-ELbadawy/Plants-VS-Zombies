@@ -34,12 +34,14 @@ import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
 import java.awt.Button;
 import javax.swing.SwingWorker;
+
 /**
  *
  * @author DELL
  */
-public class theGameMenu extends AbstractAppState implements ScreenController{
+public class theGameMenu extends AbstractAppState implements ScreenController {
 //private Background manu_img;
+
     private Camera camera;
     private FlyByCamera flyByCamera;
     private Node root;
@@ -48,22 +50,20 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
     private Timer timer;
     private Node guiNode;
     private SimpleApplication app;
-    private NiftyJmeDisplay niftyDisplay ;
+    private NiftyJmeDisplay niftyDisplay;
     private Nifty nifty;
- private ButtonBuilder btn;
-    
-    
-    
-    public theGameMenu (SimpleApplication app) {
+    private ButtonBuilder btn;
+
+    public theGameMenu(SimpleApplication app) {
         camera = app.getCamera();
         flyByCamera = app.getFlyByCamera();
         root = app.getRootNode();
         assetManager = app.getAssetManager();
         inputManager = app.getInputManager();
         timer = app.getTimer();
-      guiNode=app.getGuiNode();
-        
-      this.app = app;
+        guiNode = app.getGuiNode();
+
+        this.app = app;
 
     }
 
@@ -73,186 +73,178 @@ public class theGameMenu extends AbstractAppState implements ScreenController{
 
         super.initialize(stateManager, app);
         GUI();
-    } 
-    
-      
-    
-    
-    public  void test()
-      {
-  
-            app.getStateManager().attach( new level(app));  
-           app.getGuiViewPort().removeProcessor(getNiftyDisplay());
-      
-      
-      }
-    private NiftyJmeDisplay getNiftyDisplay()
-    {
-        for(int i=0;i<app.getGuiViewPort().getProcessors().size();i++)
-       {
-           if(app.getGuiViewPort().getProcessors().get(i)instanceof NiftyJmeDisplay)
-          return (NiftyJmeDisplay) app.getGuiViewPort().getProcessors().get(i);
-       }
-        return null;
-        
     }
-  
-       public  void cardlist()
-      {
-        // Screen.getRootElement().setVisible(false);
-         System.out.println( "habd212 "+(nifty==null));
-          
-          niftyDisplay=getNiftyDisplay();
-          nifty=niftyDisplay.getNifty();
-          System.out.println("mygame.allObjects.theGameMenu.cardlist()");
-              nifty.addScreen("card list", new ScreenBuilder("Hello Nifty Screen"){{
-          // controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
-      controller(new DefaultScreenController());
-                  System.out.println(".cardlist()");
-             layer(new LayerBuilder("background") {{
-          childLayoutVertical(); // layer properties, add more...
-          backgroundColor("#0000ff");
-        // add image
-        image(new ImageBuilder() {{
-        childLayoutCenter();
-            filename("photos/cards_img.jpg");
-              height("100%");
-                        width("100%");
-        }});
-             }});
-            
-            
-            
-            
 
-              } }.build(nifty));
-              //nifty.getCurrentScreen().endScreen("empty");
-                  nifty.gotoScreen("card list"); // start the screen
-          System.out.println("nnnnnnnnnnnnnn");
-                      }
-          
-      
-      
-      
-      
+    public void test() {
+
+        app.getStateManager().attach(new level(app));
+        app.getGuiViewPort().removeProcessor(getNiftyDisplay());
+
+    }
+
+    private NiftyJmeDisplay getNiftyDisplay() {
+        for (int i = 0; i < app.getGuiViewPort().getProcessors().size(); i++) {
+            if (app.getGuiViewPort().getProcessors().get(i) instanceof NiftyJmeDisplay) {
+                return (NiftyJmeDisplay) app.getGuiViewPort().getProcessors().get(i);
+            }
+        }
+        return null;
+
+    }
+
+    public void cardlist() {
+        // Screen.getRootElement().setVisible(false);
+        System.out.println("habd212 " + (nifty == null));
+
+        niftyDisplay = getNiftyDisplay();
+        nifty = niftyDisplay.getNifty();
+        System.out.println("mygame.allObjects.theGameMenu.cardlist()");
+        nifty.addScreen("card list", new ScreenBuilder("Hello Nifty Screen") {
+            {
+                // controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
+                controller(new DefaultScreenController());
+                System.out.println(".cardlist()");
+                layer(new LayerBuilder("background") {
+                    {
+                        childLayoutVertical(); // layer properties, add more...
+                        backgroundColor("#0000ff");
+                        // add image
+                        image(new ImageBuilder() {
+                            {
+                                childLayoutCenter();
+                                filename("photos/cards_img.jpg");
+                                height("100%");
+                                width("100%");
+                            }
+                        });
+                    }
+                });
+
+            }
+        }.build(nifty));
+        //nifty.getCurrentScreen().endScreen("empty");
+        nifty.gotoScreen("card list"); // start the screen
+        System.out.println("nnnnnnnnnnnnnn");
+    }
+
     @Override
     public void bind(Nifty nifty, Screen screen) {
-     System.out.println("You bind the screen");  
+        System.out.println("You bind the screen");
     }
 
     @Override
     public void onStartScreen() {
-  System.out.println("You start the screen"); 
+        System.out.println("You start the screen");
     }
 
     @Override
     public void onEndScreen() {
-    System.out.println("You end the screen`");
+        System.out.println("You end the screen`");
     }
-  
-    
-      public void GUI() {
-          
-    niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(assetManager,app.getInputManager(),app.getAudioRenderer(),app.getGuiViewPort());
+
+    public void GUI() {
+
+        niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(assetManager, app.getInputManager(), app.getAudioRenderer(), app.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
-       
+
         app.getGuiViewPort().addProcessor(niftyDisplay);
-        
-        
+
         app.getFlyByCamera().setDragToRotate(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
 
-   System.out.println( "habd "+(nifty==null));
-          
+        System.out.println("habd " + (nifty == null));
 
-             mainMenu();
+        mainMenu();
 
-   }
-      private void mainMenu()
-      {
-          // <screen>
-        nifty.addScreen("Main Screen", new ScreenBuilder("Hello Nifty Screen"){{
-            controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
+    }
 
-            // <layer>
-           layer(new LayerBuilder("background") {{
-          childLayoutVertical(); // layer properties, add more...
-         // backgroundColor("#00ff00");
-        // add image
-        image(new ImageBuilder() {{
-        childLayoutCenter();
-            filename("photos/menu_img1.jpg");
-              height("100%");
-                        width("100%");
-                    
-            
-        
-                // <panel>
-                
-               panel(new PanelBuilder("Panel02") {{
-                   childLayoutCenter(); // panel properties, add more...
-                    //    backgroundColor("#88f8");
-                         
-                   height("40%");
-                        width("15%");
-                    
-                          
-                    // GUI elements
-                    control(new ButtonBuilder("Button01", "Start Game"){{
-                       // alignCenter();
-                        valignTop();
-                       // valignCenter();
-                        height("20%");
-                        width("100%");
-                        
-                        interactOnClick("test()");
-                        
-                    }});
-                    
-                    // GUI elements
-                    
+    private void mainMenu() {
+        // <screen>
+        nifty.addScreen("Main Screen", new ScreenBuilder("Hello Nifty Screen") {
+            {
+                controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
 
-                    //.. add more GUI elements here
-                                      control(new ButtonBuilder("Button02", "Options"){{
-                        //alignCenter();
-                       //valignTop();
-                      //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
-                        valignCenter();
-                        System.out.println("////////////////");
-                           x(SizeValue.px(2));
-                          y(SizeValue.px(2));
-                                   backgroundColor("#ff3CB371");
-                           
-                        height("20%");
-                        width("100%");
-                        interactOnClick("cardlist()");
-                        
-                    }});
+                // <layer>
+                layer(new LayerBuilder("background") {
+                    {
+                        childLayoutVertical(); // layer properties, add more...
+                        // backgroundColor("#00ff00");
+                        // add image
+                        image(new ImageBuilder() {
+                            {
+                                childLayoutCenter();
+                                filename("photos/menu_img1.jpg");
+                                height("100%");
+                                width("100%");
 
-                  control(new ButtonBuilder("Button03", "Exit"){{
-                        //alignCenter();
-                       //valignTop();
-                      //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
-                        valignBottom();
-                       
-                        height("20%");
-                        width("100%");
-                        interactOnClick("test()");
-                        
-                    }});
-                  
-                }});
-                
-             }}); 
-                  
-             
+                                // <panel>
+                                panel(new PanelBuilder("Panel02") {
+                                    {
+                                        childLayoutCenter(); // panel properties, add more...
+                                        //    backgroundColor("#88f8");
 
-    }});
-           
-   
-  
-          /* layer(new LayerBuilder("Layer02") {{
+                                        height("40%");
+                                        width("15%");
+
+                                        // GUI elements
+                                        control(new ButtonBuilder("Button01", "Start Game") {
+                                            {
+                                                // alignCenter();
+                                                valignTop();
+                                                // valignCenter();
+                                                height("20%");
+                                                width("100%");
+
+                                                interactOnClick("test()");
+
+                                            }
+                                        });
+
+                                        // GUI elements
+                                        //.. add more GUI elements here
+                                        control(new ButtonBuilder("Button02", "Options") {
+                                            {
+                                                //alignCenter();
+                                                //valignTop();
+                                                //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
+                                                valignCenter();
+                                                System.out.println("////////////////");
+                                                x(SizeValue.px(2));
+                                                y(SizeValue.px(2));
+                                                backgroundColor("#ff3CB371");
+
+                                                height("20%");
+                                                width("100%");
+                                                interactOnClick("cardlist()");
+
+                                            }
+                                        });
+
+                                        control(new ButtonBuilder("Button03", "Exit") {
+                                            {
+                                                //alignCenter();
+                                                //valignTop();
+                                                //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
+                                                valignBottom();
+
+                                                height("20%");
+                                                width("100%");
+                                                interactOnClick("test()");
+
+                                            }
+                                        });
+
+                                    }
+                                });
+
+                            }
+                        });
+
+                    }
+                });
+
+                /* layer(new LayerBuilder("Layer02") {{
                   childLayoutVertical(); // layer properties, add more...
           
 panel(new PanelBuilder("panel_up_left") {{
@@ -291,10 +283,7 @@ panel(new PanelBuilder("panel_up_left") {{
         interactOnClick("test()");
     }});
      }});*/
-
-                 
-
-/*panel(new PanelBuilder("panel_up_right") {{
+ /*panel(new PanelBuilder("panel_up_right") {{
     childLayoutCenter();
     valignCenter();
     backgroundColor("#88f8");
@@ -310,12 +299,8 @@ panel(new PanelBuilder("panel_up_left") {{
     }});
 }});
  }}); */
-           
-           
-           
-           ///////////////////
-           
-            /*layer(new LayerBuilder("Layer01") {{
+                ///////////////////
+                /*layer(new LayerBuilder("Layer01") {{
 
                
                 childLayoutVertical(); // layer properties, add more...
@@ -400,18 +385,16 @@ panel(new PanelBuilder("panel_up_left") {{
             
                   
               }}); */
-          }
+            }
 
             private void panel(PanelBuilder panelBuilder) {
 
-            //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         }.build(nifty));
 
-               nifty.gotoScreen("Main Screen"); // start the screen
-          
-      }
+        nifty.gotoScreen("Main Screen"); // start the screen
 
-    
+    }
 
 }

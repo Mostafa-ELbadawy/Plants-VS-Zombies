@@ -11,14 +11,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import java.util.HashMap;
@@ -31,12 +23,12 @@ public class Bomb extends Attackers {
 
     public Bomb(AssetManager asset) {
         super(asset);
-         Node node = (Node) assetManager.loadModel("Blender/Green_plant/plant.j3o");
+         Node node = (Node) assetManager.loadModel("Blender/Bomb/bomb.j3o");
         this.node = node;
         this.node.setName("plant");
-        node.setLocalScale(5f);
+        node.setLocalScale(0.4f);
 
-        name = "MocapGuy_Teeth";
+        name = "plant";
         Node zomb = (Node) node.getChild(name);
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
@@ -58,6 +50,7 @@ public class Bomb extends Attackers {
           if (channal.getAnimationName()==null||!channal.getAnimationName().equals("attacking")) {
             channal.setAnim("attacking");
             channal.setLoopMode(LoopMode.DontLoop);
+            channal.setSpeed(1.5f);
         }
 
     }

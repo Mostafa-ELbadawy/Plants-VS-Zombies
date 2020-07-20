@@ -82,7 +82,7 @@ public abstract class Zombie {
        }
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(node.getWorldTranslation().add(0, 3, 0.25f), new Vector3f(-1, 0, 0));
+        Ray sight = new Ray(node.getWorldTranslation().add(0, 4, 1f), new Vector3f(-1, 0, 0));
 
         node.getParent().collideWith(sight, results);
 
@@ -94,7 +94,7 @@ public abstract class Zombie {
             float dist = results.getCollision(i).getDistance();
             // System.out.println("i= " + i + " name= " + hitName + " dist= " + dist);
 
-            if (hitName.equals("plant") && dist < 1f) {
+            if (hitName.equals("plant") && dist < 3f) {
 
                 if (timeNow - lastattack >= attackSpeed-poisonEffect*2) {
                     lastattack = timeNow;

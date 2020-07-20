@@ -77,14 +77,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     private ArrayList<Card> cardsVector;
 
-    private HashMap<Geometry, Sun> hashingSun;
     private HashMap<Geometry, Bullet> hashing;
     private HashMap<Geometry, Card> hashingCard;
+    private HashMap<Geometry, Sun> hashingSun;
     private HashMap<Node, Zombie> hashingzombie;
     private HashMap<Node, plant> hashingplant;
     private HashMap<AnimControl, Zombie> hashingzombiecontrol;
     private HashMap<AnimControl, plant> hashingPlantcontrol;
-
     PriorityQueue<pair> pq;
 
     private BitmapText scoreText;
@@ -94,10 +93,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private final Timer timer;
     private Card curCard = null;
     Random rand = new Random();
-    private Geometry mark;
+   
     private boolean dead = false;
     float right = 0, up = 0;
-    private boolean mov = false;
     // public level(AssetManager ass) {
     private final RenderManager renderManager;
 
@@ -136,50 +134,40 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         scane.setName("scane");
         lvl.attachChild(scane);
 
-        addplant(Vector3f.ZERO);
-        addzombie(1);
-        /////////////////////////////////////////////////////////////////////////////////
-
-        // bulletAppState.setDebugEnabled(true);
+        addzombie(4);
+        
+         bulletAppState.setDebugEnabled(true);
         space.setGravity(Vector3f.ZERO);
-        //space.setGravity(new Vector3f(0, 10,0));
         space.addCollisionListener(this);
 
-        //  camera.setLocation(new Vector3f(0.34607443f, 46.688816f, 33.021984f));
-        //  camera.setRotation(new Quaternion(0.011682421f, 0.8854312f, -0.46462032f, 0.0017531696f));
         camera.setLocation(new Vector3f(10.465846f, 50.21445f, 5.6196184f));
         camera.setRotation(new Quaternion(0.0196439f, 0.843758f, -0.53620327f, 0.01313919f));
 
-        // flyByCamera.setEnabled(false);
-/////////////////////////////////////////////////////////////////////////////////////////////////
+      //   flyByCamera.setEnabled(false);
         initStaticSun();
-        Sun.addSun(new Vector3f(20, 20, -20));
+        //Sun.addSun(new Vector3f(20, 20, -20));
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
         try {
-
             cardsVector = Card.loadCards(assetManager, hashingCard);
-
         } catch (Exception e) {
-            System.out.println("exxxxxxxxxxxxxxxxxxxxx");
         }
 
         guiNode.addLight(new AmbientLight());
         Node cardsNode = new Node("cards");
-//cardsNode.setLocalTranslation(50, 50, 1);
         lvl.attachChild(cardsNode);
+      /// cardsNode.setLocalTranslation(0, 0, 0);
 
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsNode.attachChild(cardsVector.get(i).getNode());
-            //  guiNode.attachChild(cardsVector.get(i).getPic());
-
+       
         }
-//        cardsNode.updateGeometricState();
-
-        pq = Generator.genrate(44);
-        // printqueue();
-/////////////////////////////////////////////////////////////////////////////////////////////
+       
+        pq = Generator.genrate(1);
+       
         lvl.addLight(new AmbientLight());
+        
+    
+    
     }
 
     public void update(float tpf) {
@@ -197,12 +185,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    private void printqueue() {
-        while (!pq.isEmpty()) {
-            System.out.println("zomp at " + pq.peek().first + " type " + pq.poll().second);
-
-        }
-    }
+    
 
     public void checkAllBombs() {
        /// System.out.println("bomb counter= "+bombVector.size());
@@ -217,11 +200,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void checkqueue() {
-        return;
-       // while (!pq.isEmpty() && timer.getTimeInSeconds() >= pq.peek().first) {
-        //    addzombie(pq.poll().second);
+         while (!pq.isEmpty() && timer.getTimeInSeconds() >= pq.peek().first) {
+            addzombie(pq.poll().second);
 
-       // }
+        }
 
     }
 
@@ -290,8 +272,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void addzombie(int typ) {
-        int row = FastMath.nextRandomInt(0, 4);
 
+        int row = FastMath.nextRandomInt(0, 4);
         if (typ == 1) {
 
             zomb.add(new Zombie01(assetManager));
@@ -299,14 +281,12 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         }
         else if (typ == 2 ) {
 
-          System.out.print("yyyyyyyyyyy");
-            zomb.add(new zombie02(assetManager));
+            zomb.add(new Zombie02(assetManager));
         }
         
         else if (typ == 3 ) {
 
-          System.out.print("loloooy");
-            zomb.add(new zombie03(assetManager));
+            zomb.add(new Zombie03(assetManager));
         }
          else if (typ == 4||true ) {
 
@@ -452,7 +432,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private final ActionListener actionListener = new ActionListener() {
         @Override
         public void onAction(String name, boolean keyPressed, float tpf) {
-            if (name.equals("one") && !keyPressed) {
+          /*  if (name.equals("one") && !keyPressed) {
                 //   curTyp=1;
             } else if (name.equals("two") && !keyPressed) {
                 // curTyp=2;
@@ -467,7 +447,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                         break;
                     }
                 }
-                 */
+                 
 
                 flyByCamera.setEnabled(!flyByCamera.isEnabled());
                 inputManager.setCursorVisible(flyByCamera.isEnabled());
@@ -480,7 +460,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 r %= 5;
                 System.out.println("row = " + r);
                 addzombie(2);
-            } else if (name.equals("add") && !keyPressed) {
+            } else*/ if (name.equals("add") && !keyPressed) {
                 Vector3f pos = getMousePos();
                 addplant(pos);
             }
@@ -626,15 +606,16 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private void killFrontZombies(Vector3f pos) {
         CollisionResults results = new CollisionResults();
 
-        Ray sight = new Ray(pos.add(0, 5, 0.25f), new Vector3f(1, 0, 0));
+        Ray sight = new Ray(pos.add(-0.5f*side, 5, 1f), new Vector3f(1, 0, 0));
 
         lvl.collideWith(sight, results);
+        
         for (int i = 0; i < results.size(); i++) {
             String hitName = results.getCollision(i).getGeometry().getName();
             float dis = results.getCollision(i).getDistance();
-            if (hitName.equals("zombie") && dis <= 6f) {
+            if (hitName.equals("zombie") && dis <= 2*side) {
                 try {
-                    Zombie z = hashingzombie.get(results.getCollision(i).getGeometry().getParent());
+                    Zombie z = hashingzombie.get(results.getCollision(i).getGeometry().getParent().getParent());
                     bulletAppState.getPhysicsSpace().remove(z.getNode().getControl(RigidBodyControl.class));
                     z.getNode().getParent().detachChild(z.getNode());
                     zomb.remove(z);
@@ -646,7 +627,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 }
 
             }
-            if (dis > 6) {
+            if (dis > 2*side) {
                 break;
             }
 
@@ -655,6 +636,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void killAroundZombies(Vector3f pos) {
+        killFrontZombies(pos.add(-side, 0, -side));
+        killFrontZombies(pos.add(0, 0, -side));
+        killFrontZombies(pos.add(-side, 0, 0));
+        killFrontZombies(pos.add(0, 0, 0));
+        killFrontZombies(pos.add(-side, 0, side));
+        killFrontZombies(pos.add(0, 0, side));
+         
 
     }
 
