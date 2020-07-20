@@ -5,6 +5,9 @@
  */
 package mygame.allObjects;
 
+import mygame.PlantesPacket.plant;
+import mygame.ZombiesPacket.Zombie;
+import mygame.ZombiesPacket.Zombie01;
 import addetions.PhysicsTestHelper;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
@@ -162,10 +165,10 @@ public class level01 extends AbstractAppState implements AnimEventListener, Phys
         if (right != 0 || up != 0) {
 
             
-            zomb.getLast().phyControl.setEnabled(false);
+            zomb.getLast().getPhyControl().setEnabled(false);
         
             zomb.getLast().getNode().move(right * tpf, 0, up * tpf);
-            zomb.getLast().phyControl.setEnabled(true);
+            zomb.getLast().getPhyControl().setEnabled(true);
         }
 
         if (mov) {
@@ -420,12 +423,12 @@ public class level01 extends AbstractAppState implements AnimEventListener, Phys
             zomb.getLast().setRow(row);
             lvl.attachChild(zomb.getLast().getNode());
             bulletAppState.getPhysicsSpace().addAll(zomb.getLast().getNode());
-            zomb.getLast().phyControl.setEnabled(false);
+            zomb.getLast().getPhyControl().setEnabled(false);
            zomb.getLast().getNode().rotate( (float) Math.PI / 2,-(float) Math.PI / 2,0);
             zomb.getLast().getNode().setLocalTranslation(v);
 
             hashingzombie.put( zomb.getLast().getNode(), zomb.getLast());
-            zomb.getLast().phyControl.setEnabled(true);
+            zomb.getLast().getPhyControl().setEnabled(true);
 
         }
 
@@ -439,11 +442,11 @@ public class level01 extends AbstractAppState implements AnimEventListener, Phys
             lvl.attachChild(plan.getLast().getNode());
             
              bulletAppState.getPhysicsSpace().addAll(plan.getLast().getNode());
-            plan.getLast().phyControl.setEnabled(false);
+            plan.getLast().getPhyControl().setEnabled(false);
         //    plan.getLast().getNode().rotate( 0,(float) Math.PI / 2,0);
             plan.getLast().getNode().setLocalTranslation(v);
 
-            plan.getLast().phyControl.setEnabled(true);
+            plan.getLast().getPhyControl().setEnabled(true);
             
             
 

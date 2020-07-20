@@ -5,6 +5,7 @@
  */
 package mygame.allObjects;
 
+import mygame.PlantesPacket.Defenders;
 import com.jme3.animation.AnimControl;  
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.PhysicsCollisionObject;

@@ -1,7 +1,6 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import mygame.allObjects.theGameMenu;
 
 
 /**

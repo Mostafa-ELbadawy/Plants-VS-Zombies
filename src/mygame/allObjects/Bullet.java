@@ -42,7 +42,7 @@ public class Bullet {
     }
     
     public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f v) {
-         this(effect,power,effectTime, root, space, mat, v, 5);
+         this(effect,power,effectTime, root, space, mat, v, 13);
     
     }
     
