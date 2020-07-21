@@ -70,7 +70,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
     public void StartGame() {
         
         
-        app.getStateManager().attach(new level(app,level));
+        app.getStateManager().attach(new level(app,/*level*/100));
         app.getGuiViewPort().removeProcessor(getNiftyDisplay());
         
     }

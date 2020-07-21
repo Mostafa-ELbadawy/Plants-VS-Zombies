@@ -182,7 +182,7 @@ public class Card {
         ArrayList<Card> vector = new ArrayList<>();
         FileInputStream file = new FileInputStream("assets/files/plantsCards.txt");
         Scanner scan = new Scanner(file);
-        int ind = 0;
+        int ind = 3;
         while (scan.hasNextLine()) {
             int typ = scan.nextInt();
             int cost = scan.nextInt();

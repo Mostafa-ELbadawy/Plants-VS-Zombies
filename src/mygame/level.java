@@ -37,6 +37,7 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -44,6 +45,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -65,7 +67,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     private final float side = 5.8f;
     private float soundVolume = 0;
-    private int score = 15000, level = 0;
+    private int score = 1000, level = 0;
     private boolean dead = false, isSound = true;
 
     Random rand = new Random();
@@ -111,6 +113,14 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     private Card curCard = null;
 
+    private Vector3f[][] cameraCardsPositions;
+    private Quaternion[] cameraRotation;
+    private int cameraStatus = -1, loseStatus = 1;
+    private boolean camerachanged = false, soundChanged = false;
+    private Node cardsNode;
+    BitmapText levelText, printText;
+    BitmapFont font;
+
     public level(SimpleApplication app, int level) {
         this(app, level, 100);
     }
@@ -145,11 +155,11 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         timer.reset();
         root.attachChild(lvl);
 
-        camera.setLocation(new Vector3f(10.465846f, 50.21445f, 5.6196184f));
-        camera.setRotation(new Quaternion(0.0196439f, 0.843758f, -0.53620327f, 0.01313919f));
+        camera.setLocation(new Vector3f(20.877138f, 61.490482f, -21.619055f));
+        camera.setRotation(new Quaternion(-0.010221233f, -0.69683564f, 0.7171501f, 0.0033561937f));
 
         /// bulletAppState.setDebugEnabled(true);
-        //   flyByCamera.setEnabled(false);
+        flyByCamera.setEnabled(false);
         initStaticSun();
 
         try {
@@ -157,17 +167,88 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         } catch (Exception e) {
         }
 
-        Node cardsNode = new Node("cards");
+        cardsNode = new Node("cards");
         lvl.attachChild(cardsNode);
 
+        flyByCamera.setMoveSpeed(30f);
+        flyByCamera.setZoomSpeed(30f);
+
+        cardsNode.setLocalTranslation(new Vector3f(44.0f, -4.0f, -28.0f));
+        cardsNode.setLocalRotation(new Quaternion(-0.010221233f, -0.69683564f, 0.7171501f, 0.0033561937f));
+
+        ///////////////////////////////////////////////////////////////////
+        // show level
+        BitmapFont fontLevel = assetManager.loadFont("Interface/Fonts/Console.fnt");
+
+        levelText = new BitmapText(fontLevel);
+        levelText.setSize(1.5f);
+
+        levelText.setColor(ColorRGBA.White);
+        levelText.setText("Level\n " + Integer.toString(level));
+
+        levelText.setLocalTranslation(10.5f, 5f, -32);
+        levelText.setLocalRotation(camera.getRotation());
+        levelText.rotate((float) Math.PI / 2, (float) Math.PI, (float) Math.PI);
+
+        //camera
+        Box boxCamera = new Box(2f, 2f, 0.01f);
+        Geometry cubeCamera = new Geometry("camera", boxCamera);
+
+        Material MatC = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        MatC.setColor("Color", ColorRGBA.White);
+        MatC.setTexture("ColorMap", assetManager.loadTexture("photos/cameraphoto.png"));
+        MatC.getAdditionalRenderState().setDepthWrite(false);
+        MatC.getAdditionalRenderState().setDepthTest(false);
+        MatC.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+
+        cubeCamera.setQueueBucket(RenderQueue.Bucket.Transparent);
+        cubeCamera.setMaterial(MatC);
+        cubeCamera.setLocalTranslation(12f, 5f, -27);
+
+        //sound
+        Box boxSound = new Box(2f, 2f, 0.01f);
+        Geometry cubeSound = new Geometry("sound", boxSound);
+
+        Material MatS = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        MatS.setColor("Color", ColorRGBA.White);
+        MatS.setTexture("ColorMap", assetManager.loadTexture("photos/sound.png"));
+        MatS.getAdditionalRenderState().setDepthWrite(false);
+        MatS.getAdditionalRenderState().setDepthTest(false);
+        MatS.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
+
+        cubeSound.setQueueBucket(RenderQueue.Bucket.Transparent);
+        cubeSound.setMaterial(MatS);
+        cubeSound.setLocalTranslation(16f, 5f, -27);
+//////////////////////////////////////////////////////////////////
+
+        cardsNode.attachChild(levelText);
+        cardsNode.attachChild(scoreText);
+        cardsNode.attachChild(cubeCamera);
+        cardsNode.attachChild(cubeSound);
+
+        scoreText.setLocalTranslation(levelText.getLocalTranslation().add(-0.5f, -3.0f, 0.0f));
+        scoreText.setLocalRotation(levelText.getLocalRotation());
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsNode.attachChild(cardsVector.get(i).getNode());
         }
-
     }
 
     @Override
     public void update(float tpf) {
+        if (dead) {
+            sleep(5000);
+            if (loseStatus == 1) {
+                printText.setSize(8);
+                printText.setText("Game Over");
+            } else if (loseStatus == 2) {
+                app.getRootNode().detachChild(lvl);
+                SoundNode.stop();
+                app.getStateManager().attach(new theGameMenu(app));
+                app.getStateManager().detach(app.getStateManager().getState(level.class));
+            }
+            loseStatus++;
+            return;
+        }
         moveAllZombies(tpf);
         attackAllPlanet(tpf);
         checkqueue();
@@ -175,9 +256,11 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         checkAllCars(tpf);
         checkAllBombs();
 
-        scoreText.setText(Integer.toString(score));
+        scoreText.setText("score:\n" + Integer.toString(score));
         if (dead) {
-            //   System.out.println("Dead");
+            //  playSound(2); // play lose sound
+            printText.setSize(4);
+            printTextOnScreen("THE ZOMBIES\nATE YOUR\nBRAINS!", ColorRGBA.Red);
         }
 
     }
@@ -359,12 +442,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         lvl.addLight(new AmbientLight());
         floor = new plant[6][10];
 
-        SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
-        SoundNode.setLooping(true);  // activate continuous playing
-        SoundNode.setPositional(false);
-        SoundNode.setVolume(3);
-        lvl.attachChild(SoundNode);
-        SoundNode.play();
+        playSound(1);
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 9; j++) {
@@ -372,6 +450,32 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             }
         }
 
+        font = assetManager.loadFont("Interface/Fonts/Console.fnt");
+        printText = new BitmapText(font);
+
+        //col[0]->camerlocation , col[1]->cardslocation
+        cameraCardsPositions = new Vector3f[5][2];
+        cameraCardsPositions[0][0] = new Vector3f(62.338234f, 24.681103f, 14.634925f);
+        cameraCardsPositions[0][1] = new Vector3f(28.0f, -4.0f, -55.0f);
+
+        cameraCardsPositions[1][0] = new Vector3f(64.436935f, 30.658216f, -45.591244f);
+        cameraCardsPositions[1][1] = new Vector3f(0.0f, -3.0f, -11.0f);
+
+        cameraCardsPositions[2][0] = new Vector3f(-3.5778122f, 34.96735f, -49.976112f);
+        cameraCardsPositions[2][1] = new Vector3f(9.0f, -6.5f, 18.0f);
+
+        cameraCardsPositions[3][0] = new Vector3f(-1.4025922f, 36.037018f, 26.289604f);
+        cameraCardsPositions[3][1] = new Vector3f(45.0f, 0.1f, -25.0f);
+
+        cameraCardsPositions[4][0] = new Vector3f(20.877138f, 61.490482f, -21.619055f);
+        cameraCardsPositions[4][1] = new Vector3f(44.0f, -4.0f, -28.0f);
+
+        cameraRotation = new Quaternion[5];
+        cameraRotation[0] = new Quaternion(-0.10186718f, 0.877377f, -0.24892709f, -0.39732596f);
+        cameraRotation[1] = new Quaternion(0.26935488f, -0.40357396f, 0.13690536f, 0.8636162f);
+        cameraRotation[2] = new Quaternion(0.34881547f, 0.26625514f, -0.09325592f, 0.8937222f);
+        cameraRotation[3] = new Quaternion(0.091312274f, 0.91568655f, -0.30987224f, 0.23908037f);
+        cameraRotation[4] = new Quaternion(-0.010221233f, -0.69683564f, 0.7171501f, 0.0033561937f);
     }
 
     @Override
@@ -420,6 +524,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("add") && !keyPressed) {
                 Vector3f pos = getMousePos();
+                flyByCamera.setEnabled(!flyByCamera.isEnabled());
                 if (!pos.equals(new Vector3f(-100, -100, -100))) {
                     addplant(pos);
                 }
@@ -464,23 +569,31 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 }
             } else if (hitName.equals("sun")) {
                 score += Sun.removeSun(results.getCollision(i).getGeometry());
-
+            } else if (hitName.equals("camera")) {
+                camerachanged = !camerachanged;
+                if (camerachanged) {
+                    cameraStatus = ++cameraStatus % 5;
+                    changeCameraPosition();
+                }
+            } else if (hitName.equals("sound")) {
+                soundChanged = !soundChanged;
+                if (soundChanged) {
+                    isSound = !isSound;
+                    ResetSound();
+                }
             }
-            /* // to shamy
-                 else if (hitName.equals("CameraButton")) {
-                   cameraStat++;
-                   cameraStat%=5;
-                   ResetCamera();             
-                }
-                  else if (hitName.equals("SoundButton")) {
-                   isSound=!isSound;
-                   ResetSound();             
-                }
-           
-             */
         }
         return pos;
 
+    }
+
+    private void changeCameraPosition() {
+        System.out.println("mygame.level.changeCameraPosition()");
+        camera.setLocation(cameraCardsPositions[cameraStatus][0]);
+        camera.setRotation(cameraRotation[cameraStatus]);
+
+        cardsNode.setLocalTranslation(cameraCardsPositions[cameraStatus][1]); //
+        cardsNode.setLocalRotation(cameraRotation[cameraStatus]);
     }
 
     private void ResetSound() {
@@ -598,7 +711,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 } catch (Exception e) {
                     System.out.println("zombie dell");
                 }
-
             }
             if (dis > 2 * side) {
                 break;
@@ -618,20 +730,71 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
+    private void playSound(int stat) {
+        if (SoundNode != null) {
+            SoundNode.stop();
+        }
+
+        if (stat == 1) {
+            SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
+            SoundNode.setLooping(true);  // activate continuous playing
+            SoundNode.setPositional(false);
+            SoundNode.setVolume(3);
+            lvl.attachChild(SoundNode);
+            SoundNode.play();
+        } else if (stat == 2) {
+            //SoundNode = new AudioNode(assetManager, "", DataType.Stream); // put path of lose sound
+            SoundNode.setLooping(true);  // activate continuous playing
+            SoundNode.setPositional(false);
+            SoundNode.setVolume(3);
+            lvl.attachChild(SoundNode);
+            SoundNode.play();
+        }
+    }
+
     private void initScoreText() {
         BitmapFont font = assetManager.loadFont("Interface/Fonts/Console.fnt");
 
         scoreText = new BitmapText(font);
-        scoreText.setSize(5);
+        scoreText.setSize(1f);
 
         scoreText.setColor(ColorRGBA.Blue);
 
-        scoreText.setText(Integer.toString(score));
+        scoreText.setText("score:\n" + Integer.toString(score));
         lvl.attachChild(scoreText);
-
+        /*
         scoreText.setLocalTranslation(2f, 5, -26.5f);
-        scoreText.rotate(-(float) Math.PI / 2, 0, 0);
+        scoreText.rotate(-(float) Math.PI / 2, 0, 0);*/
+    }
 
+    private void sleep(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            System.out.println("sleep error");
+        }
+    }
+
+    private void printTextOnScreen(String text, ColorRGBA color) {
+
+        printText.setColor(color);
+        printText.setText(text);
+
+        if (cameraStatus == 4 || cameraStatus == -1) {
+            printText.setLocalTranslation(new Vector3f(-5.0f, 10.0f, -24.0f));
+        } else if (cameraStatus == 0) {
+            printText.setLocalTranslation(new Vector3f(10.0f, 12.0f, 0.0f));
+        } else if (cameraStatus == 1) {
+            printText.setLocalTranslation(new Vector3f(31.0f, 10.0f, 17.0f));
+        } else if (cameraStatus == 2) {
+            printText.setLocalTranslation(new Vector3f(50.0f, 10.0f, -20.0f));
+        } else if (cameraStatus == 3) {
+            printText.setLocalTranslation(new Vector3f(-1.0f, 10.0f, -30.0f));
+        }
+        printText.setLocalRotation(cardsNode.getLocalRotation());
+
+        printText.rotate(0f, (float) Math.PI, 0f);
+        lvl.attachChild(printText);
     }
 
     private void initStaticSun() {
