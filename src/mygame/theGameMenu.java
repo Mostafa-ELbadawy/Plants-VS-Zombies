@@ -12,8 +12,6 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
@@ -24,16 +22,10 @@ import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
-import de.lessvoid.nifty.controls.imageselect.builder.ImageSelectBuilder;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import java.awt.Color;
-//import javafx.scene.layout.Background;
-import de.lessvoid.nifty.builder.ElementBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
 import de.lessvoid.nifty.tools.SizeValue;
-import java.awt.Button;
-import javax.swing.SwingWorker;
 
 /**
  *
@@ -53,6 +45,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
     private NiftyJmeDisplay niftyDisplay;
     private Nifty nifty;
     private ButtonBuilder btn;
+    private int level;
 
     public theGameMenu(SimpleApplication app) {
         camera = app.getCamera();
@@ -67,7 +60,6 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
 
     }
 
-    //////
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
 
@@ -75,11 +67,12 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
         GUI();
     }
 
-    public void test() {
-
-        app.getStateManager().attach(new level(app));
+    public void StartGame() {
+        
+        
+        app.getStateManager().attach(new level(app,level));
         app.getGuiViewPort().removeProcessor(getNiftyDisplay());
-
+        
     }
 
     private NiftyJmeDisplay getNiftyDisplay() {
@@ -93,15 +86,12 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
     }
 
     public void cardlist() {
-        // Screen.getRootElement().setVisible(false);
-        System.out.println("habd212 " + (nifty == null));
 
         niftyDisplay = getNiftyDisplay();
         nifty = niftyDisplay.getNifty();
         System.out.println("mygame.allObjects.theGameMenu.cardlist()");
         nifty.addScreen("card list", new ScreenBuilder("Hello Nifty Screen") {
             {
-                // controller(new mygame.allObjects.theGameMenu(app)); // Screen properties
                 controller(new DefaultScreenController());
                 System.out.println(".cardlist()");
                 layer(new LayerBuilder("background") {
@@ -124,7 +114,6 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
         }.build(nifty));
         //nifty.getCurrentScreen().endScreen("empty");
         nifty.gotoScreen("card list"); // start the screen
-        System.out.println("nnnnnnnnnnnnnn");
     }
 
     @Override
@@ -153,7 +142,6 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
 
-        System.out.println("habd " + (nifty == null));
 
         mainMenu();
 
@@ -196,7 +184,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
                                                 height("20%");
                                                 width("100%");
 
-                                                interactOnClick("test()");
+                                                interactOnClick("StartGame()");
 
                                             }
                                         });

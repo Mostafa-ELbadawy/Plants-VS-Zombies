@@ -34,7 +34,7 @@ public class Potato extends Defenders {
 
         this.node.rotate(0, (float) Math.PI / 2, 0);
 
-        health = 150;
+        health = 200;
     }
 
 }

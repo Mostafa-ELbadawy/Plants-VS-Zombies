@@ -28,25 +28,27 @@ public class Jumper extends Attackers {
     public Jumper(AssetManager asset) {
         super(asset);
 
-        Node node = (Node) assetManager.loadModel("Blender/Green_plant/plant.j3o");
+        Node node = (Node) assetManager.loadModel("Blender/Jumper/Jumper.j3o");
         this.node = node;
         this.node.setName("plant");
-        node.setLocalScale(5f);
+        node.setLocalScale(2.5f);
+     
 
-        name = "MocapGuy_Teeth";
+        name = "plant";
         Node zomb = (Node) node.getChild(name);
+     
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
 
-        phyControl = new RigidBodyControl(0);
 
+        phyControl = new RigidBodyControl(0);
         phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-
         this.node.addControl(phyControl);
 
-        this.node.rotate(0, (float) Math.PI / 2, 0);
+
+        //this.node.rotate(0, (float) Math.PI / 2, 0);
     }
 
     @Override

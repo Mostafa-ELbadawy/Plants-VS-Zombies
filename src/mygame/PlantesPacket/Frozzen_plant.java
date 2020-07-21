@@ -55,7 +55,7 @@ public class Frozzen_plant extends Attackers {
 
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
             mat.setColor("Color", ColorRGBA.Cyan);
-            Bullet bullet = new Bullet(effect, attackPower, effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(0.5f, 3f, 0));
+            Bullet bullet = new Bullet(effect, attackPower, effectTime, node.getParent(), space, mat, node.getLocalTranslation().add(1.5f, 4.2f, 0));
 
             hashing.put(bullet.getNode(), bullet);
             lastAttack = timeNow;

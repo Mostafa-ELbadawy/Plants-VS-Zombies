@@ -48,12 +48,16 @@ public class Sun {
         mat.setColor("Color", ColorRGBA.Yellow);
         node = new Geometry("sun", sun);
         node.setMaterial(mat);
-        phyControl = new RigidBodyControl(15);
 
-        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl = new RigidBodyControl(15);
+        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+
+        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
+        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_03);
+
         this.node.addControl(phyControl);
-        
+
         phyControl.setLinearVelocity(new Vector3f(0, -5, 0));
     }
 
@@ -109,8 +113,8 @@ public class Sun {
         }
 
     }
-    public static void initStaticSun(AssetManager assetManager,LinkedList<Sun> sunsVector,Node lvl,PhysicsSpace space,HashMap<Geometry, Sun> hashingSun)
-    {  
+
+    public static void initStaticSun(AssetManager assetManager, LinkedList<Sun> sunsVector, Node lvl, PhysicsSpace space, HashMap<Geometry, Sun> hashingSun) {
         Sun.assetManager = assetManager;
         Sun.sunsVector = sunsVector;
         Sun.lvl = lvl;
@@ -118,7 +122,4 @@ public class Sun {
         Sun.space = space;
     }
 
-    
-    
-    
 }
