@@ -1,7 +1,7 @@
-Material My Material : Common/MatDefs/Light/Lighting.j3md {
+Material My Material : Common/MatDefs/Misc/Unshaded.j3md {
      MaterialParameters {
-        DiffuseMap : "photos/Floor.jpg"
-        SpecularMap : "photos/Floor.jpg"
+        ColorMap : "photos/Floor.jpg"
+        GlowMap : "photos/Floor.jpg"
      }
     AdditionalRenderState {
     }

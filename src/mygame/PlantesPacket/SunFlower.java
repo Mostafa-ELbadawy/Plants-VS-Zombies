@@ -41,7 +41,7 @@ public class SunFlower extends Attackers {
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
 
         this.node.addControl(phyControl);
-        this.node.rotate(0, (float) Math.PI / 2, 0);
+        this.node.rotate(0, (float) Math.PI, 0);
 
         attackPower = 25;
         attackSpeed = 15;
@@ -58,7 +58,7 @@ public class SunFlower extends Attackers {
             channal.setAnim("attacking");
             channal.setLoopMode(LoopMode.DontLoop);
             lastAttack = timeNow;
-            Sun.addSun(getNode().getLocalTranslation().add(1, 5, 0));
+            Sun.addSun(getNode().getLocalTranslation().add(3, 5, 0));
 
         } else {
             idel();

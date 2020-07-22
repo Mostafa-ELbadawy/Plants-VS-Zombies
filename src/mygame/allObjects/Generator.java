@@ -49,7 +49,7 @@ public class Generator {
             Wave(80, 110, typsMxIndex[Math.min(MX, MXtyp)], q, totalZombies / (numOfWaves + 2));
             Normal(125, 170, typsMxIndex[Math.min(1, MXtyp)], q);
             Wave(170, 200, typsMxIndex[Math.min(MX, MXtyp)], q, totalZombies / (numOfWaves + 2));
-            Normal(215, 270, typsMxIndex[Math.min(1, MXtyp)], q);
+            Normal(215, 270, typsMxIndex[Math.min(1, MXtyp)], q); 
 
         }
         Wave(270, 300, typsMxIndex[Math.min(MX, MXtyp)], q, totalZombies / (numOfWaves + 2));

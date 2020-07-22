@@ -5,7 +5,7 @@
  */
 package mygame;
 
-
+import addetions.ScoreException;
 import addetions.pair;
 import java.io.IOException;
 import mygame.allObjects.*;
@@ -63,8 +63,6 @@ import java.util.Random;
  *
  * @author DELL
  */
-
-
 public class level extends AbstractAppState implements PhysicsCollisionListener, AnimEventListener {
 
     private final float side = 5.8f;
@@ -91,8 +89,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private final InputManager inputManager;
     private BulletAppState bulletAppState;
 
+    
     private LinkedList<Zombie> zomb;
     private LinkedList<plant> plan;
+   
     private LinkedList<Car> cars;
     private LinkedList<Sun> sunsVector;
     private LinkedList<BombEffect> bombVector;
@@ -122,6 +122,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private Node cardsNode;
     BitmapText levelText, printText;
     BitmapFont font;
+    int c = 0;
 
     public level(SimpleApplication app, int level) {
         this(app, level, 1);
@@ -234,10 +235,64 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         for (int i = 0; i < cardsVector.size(); i++) {
             cardsNode.attachChild(cardsVector.get(i).getNode());
         }
+
+        chooseCase();
+    }
+
+    void addplant(int row, int col, int typ) {
+        curCard = new Card(typ, 0, 0, 0, assetManager, "Blender/mainBG.png");
+ 
+        try {
+            
+        addplant(new Vector3f(col * side, 0, -row * side));
+        } catch (Exception e) {
+        }
+        
+    }
+
+    void addrow(int row, int typ) {
+        addplant(0, row, typ);
+        addplant(1, row, typ);
+        addplant(2, row, typ);
+        addplant(3, row, typ);
+        addplant(4, row, typ);
+
+    }
+
+    void chooseCase() {
+        if (c == 1) {
+
+            addrow(0, 3);
+            addrow(1, 1);
+            addrow(2, 4);
+            addrow(3, 2);
+
+       
+        }
+
+    }
+
+    void chosecaseupdate() {
+        if (timer.getTimeInSeconds() >= 20) {
+            if (c == 1) {
+                addzombie(3);
+                addzombie(3);
+                addzombie(2);
+                addzombie(2);
+                addzombie(2);
+                addzombie(4);
+                addzombie(4);
+                addzombie(3);
+
+            }
+            c = 0;
+        }
+
     }
 
     @Override
     public void update(float tpf) {
+        chosecaseupdate();
         if (dead) {
             sleep(5000);
             if (loseStatus == 1) {
@@ -281,6 +336,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         }
 
+    
     }
 
     public void checkAllBombs() {
@@ -373,11 +429,11 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         int row = FastMath.nextRandomInt(0, 4);
         if (typ == 1) {
-            zomb.add(new Zombie01(assetManager));
+            zomb.add(new Zombie03(assetManager));
         } else if (typ == 2) {
             zomb.add(new Zombie02(assetManager));
         } else if (typ == 3) {
-            zomb.add(new Zombie03(assetManager));
+            zomb.add(new Zombie01(assetManager));
         } else if (typ == 4) {
             zomb.add(new Zombie04(assetManager));
         }
@@ -396,13 +452,15 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    private void addplant(Vector3f v) {
+    private void addplant(Vector3f v) throws ScoreException{
 
         int col = (int) (v.x / side), row = (int) -(v.z / side);
         if (curCard == null) {
             return;
         }
-        if (is_valid(row, col) && curCard.getCost() <= score) {
+        if (curCard.getCost() <= score)
+            throw new ScoreException();
+        if (is_valid(row, col) ) {
 
             if (curCard.getTyp() == 1) {
                 plan.add(new Grean_Plant(assetManager));
@@ -553,13 +611,19 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 Vector3f pos = getMousePos();
                 flyByCamera.setEnabled(!flyByCamera.isEnabled());
                 if (!pos.equals(new Vector3f(-100, -100, -100))) {
+                    try {
                     addplant(pos);
+                        
+                    } catch (ScoreException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    
                 }
             } else if (name.equals("exit") && !keyPressed) {
                 Close();
-            }
-            else if (name.equals("cheating")&&!keyPressed)
+            } else if (name.equals("cheating") && !keyPressed) {
                 cheating();
+            }
 
         }
     };
@@ -637,10 +701,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         inputManager.addListener(actionListener, "exit");
         inputManager.addMapping("cheating", new KeyTrigger(KeyInput.KEY_F2));
         inputManager.addListener(actionListener, "cheating");
-    
-    
     }
-
+    
     private void initFloor() {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -767,17 +829,17 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         }
 
         if (stat == 1) {
-            SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
+            SoundNode = new AudioNode(assetManager, "Sounds/GrasswalkPvZ1.ogg", DataType.Stream);
         } else if (stat == 2) {
             //lose sound
-            SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
+            SoundNode = new AudioNode(assetManager, "Sounds/lose.ogg", DataType.Stream);
         } else if (stat == 3) {
             //win sound
-            SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
+            SoundNode = new AudioNode(assetManager, "Sounds/winmusic.ogg", DataType.Stream);
         }
 
         SoundNode.setName("sound");
-        SoundNode.setLooping(true);  
+        SoundNode.setLooping(true);
         SoundNode.setPositional(false);
         SoundNode.setVolume(3);
         lvl.attachChild(SoundNode);
@@ -807,7 +869,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         printText.setColor(color);
         printText.setText(text);
-    
 
         if (cameraStatus == 4 || cameraStatus == -1) {
             printText.setLocalTranslation(new Vector3f(-5.0f, 10.0f, -24.0f));
@@ -836,28 +897,26 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void Close() {
-       ((AudioNode)lvl.getChild("sound")).stop();
+      
+        SoundNode.stop();
+        SoundNode.setVolume(0);
         app.getRootNode().detachChild(lvl);
         app.getStateManager().attach(new theGameMenu(app));
         app.getStateManager().detach(app.getStateManager().getState(level.class));
 
     }
-    
-   private void cheating()
-    {
+
+    private void cheating() {
         printText.setSize(4);
         printTextOnScreen("YOU Cheated", ColorRGBA.Red);
-        while(!pq.isEmpty())
-        pq.remove();
+        while (!pq.isEmpty()) {
+            pq.remove();
+        }
         for (Zombie zomb1 : zomb) {
             zomb1.damage(zomb1.getHealth());
             zomb1.dying();
         }
-            
-        
-        
+
     }
-    
-    
 
 }

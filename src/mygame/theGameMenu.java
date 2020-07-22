@@ -114,7 +114,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
         app.getFlyByCamera().setDragToRotate(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
-        SoundNode = new AudioNode(app.getAssetManager(), "Sounds/BackGround.ogg", AudioData.DataType.Stream);
+        SoundNode = new AudioNode(app.getAssetManager(), "Sounds/Main Menu.ogg", AudioData.DataType.Stream);
         SoundNode.setName("sound");
         SoundNode.setLooping(true);  // activate continuous playing
         SoundNode.setPositional(false);
@@ -149,7 +149,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
                                         alignCenter();
                                         height("40%");
                                         width("60%");
-                                        /*
+                                        
                                         control(new ButtonBuilder("Button02", "") {
                                             {                                              
                                                 valignTop();
@@ -157,7 +157,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
                                                 width("0%");
                                             }
                                         });
-                                         */
+                                         
                                         control(new ButtonBuilder("Button01", "START GAME") {
                                             {
                                                 valignCenter();
