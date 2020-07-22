@@ -5,11 +5,12 @@
  */
 package mygame;
 
+
 import addetions.pair;
+import java.io.IOException;
 import mygame.allObjects.*;
 import mygame.PlantesPacket.*;
 import mygame.ZombiesPacket.*;
-
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.AnimEventListener;
@@ -51,24 +52,25 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.Timer;
-import java.applet.Applet;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Random;
-import net.java.games.input.Component;
 
 /**
  *
  * @author DELL
  */
+
+
 public class level extends AbstractAppState implements PhysicsCollisionListener, AnimEventListener {
 
     private final float side = 5.8f;
     private float soundVolume = 0;
     private int score = 1000, level = 0;
-    private boolean dead = false, isSound = true;
+    private boolean dead = false, isSound = true, win = false;
 
     Random rand = new Random();
     private final Timer timer;
@@ -122,7 +124,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     BitmapFont font;
 
     public level(SimpleApplication app, int level) {
-        this(app, level, 100);
+        this(app, level, 1);
     }
 
     public level(SimpleApplication app, int level, float volume) {
@@ -138,6 +140,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         renderManager = app.getRenderManager();
         this.level = level;
         this.soundVolume = volume;
+        System.out.println("YOua add level");
     }
 
     @Override
@@ -178,7 +181,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         ///////////////////////////////////////////////////////////////////
         // show level
-        BitmapFont fontLevel = assetManager.loadFont("Interface/Fonts/Console.fnt");
+        BitmapFont fontLevel = assetManager.loadFont("Fonts/zeft4.fnt");
 
         levelText = new BitmapText(fontLevel);
         levelText.setSize(1.5f);
@@ -241,16 +244,25 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 printText.setSize(8);
                 printText.setText("Game Over");
             } else if (loseStatus == 2) {
-                app.getRootNode().detachChild(lvl);
-                SoundNode.stop();
-                app.getStateManager().attach(new theGameMenu(app));
-                app.getStateManager().detach(app.getStateManager().getState(level.class));
+                Close();
             }
             loseStatus++;
             return;
         }
+
+        if (win) {
+            sleep(5000);
+            try {
+                UpdateLevelFile();
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            Close();
+
+        }
         moveAllZombies(tpf);
-        attackAllPlanet(tpf);
+        attackAllPlant(tpf);
         checkqueue();
         checkAllCards();
         checkAllCars(tpf);
@@ -258,9 +270,15 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         scoreText.setText("score:\n" + Integer.toString(score));
         if (dead) {
-            //  playSound(2); // play lose sound
+            playSound(2); // play lose sound
             printText.setSize(4);
             printTextOnScreen("THE ZOMBIES\nATE YOUR\nBRAINS!", ColorRGBA.Red);
+        }
+        if (win) {
+            playSound(3); // play win sound
+            printText.setSize(4);
+            printTextOnScreen("YOU  WIN", ColorRGBA.Red);
+
         }
 
     }
@@ -279,7 +297,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         while (!pq.isEmpty() && timer.getTimeInSeconds() >= pq.peek().first) {
             addzombie(pq.poll().second);
         }
-
+        if (pq.isEmpty() && zomb.isEmpty()) {
+            win = true;
+        }
     }
 
     public void moveAllZombies(float tpf) {
@@ -291,7 +311,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    public void attackAllPlanet(float tpf) {
+    public void attackAllPlant(float tpf) {
         for (int i = 0; i < plan.size(); i++) {
             plan.get(i).setstatus(tpf, timer.getTimeInSeconds(), space, hashing);
         }
@@ -450,7 +470,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             }
         }
 
-        font = assetManager.loadFont("Interface/Fonts/Console.fnt");
+        font = assetManager.loadFont("Fonts/zeft7.fnt");
         printText = new BitmapText(font);
 
         //col[0]->camerlocation , col[1]->cardslocation
@@ -476,6 +496,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         cameraRotation[2] = new Quaternion(0.34881547f, 0.26625514f, -0.09325592f, 0.8937222f);
         cameraRotation[3] = new Quaternion(0.091312274f, 0.91568655f, -0.30987224f, 0.23908037f);
         cameraRotation[4] = new Quaternion(-0.010221233f, -0.69683564f, 0.7171501f, 0.0033561937f);
+    }
+
+    private void UpdateLevelFile() throws IOException {
+
+        FileWriter fileWriter = new FileWriter("assets/files/level.txt");
+        fileWriter.write(level + 1);
+        fileWriter.close();
     }
 
     @Override
@@ -529,13 +556,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                     addplant(pos);
                 }
             } else if (name.equals("exit") && !keyPressed) {
-                app.getRootNode().detachChild(lvl);
-                SoundNode.stop();
-                app.getStateManager().attach(new theGameMenu(app));
-                app.getStateManager().detach(app.getStateManager().getState(level.class));
-            } else if (name.equals("pause") && !keyPressed) {
-
+                Close();
             }
+            else if (name.equals("cheating")&&!keyPressed)
+                cheating();
 
         }
     };
@@ -609,12 +633,12 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         inputManager.addMapping("add", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addListener(actionListener, "add");
 
-        inputManager.addMapping("exit", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("exit", new KeyTrigger(KeyInput.KEY_E));
         inputManager.addListener(actionListener, "exit");
-
-        inputManager.addMapping("pause", new KeyTrigger(KeyInput.KEY_P));
-        inputManager.addListener(actionListener, "pause");
-
+        inputManager.addMapping("cheating", new KeyTrigger(KeyInput.KEY_F2));
+        inputManager.addListener(actionListener, "cheating");
+    
+    
     }
 
     private void initFloor() {
@@ -633,11 +657,19 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         lvl.attachChild(floorGeometry);
         space.add(floorGeometry);
 
+        Material mat2 = assetManager.loadMaterial("Materials/road_mat.j3m");
+        Box floorBox2 = new Box(100, 0.25f, 18);
+        Geometry floorGeometry2 = new Geometry("Floor2", floorBox2);
+        floorGeometry2.setMaterial(mat2);
+        floorGeometry2.setLocalTranslation(15, -0.5f, -15);
+
+        lvl.attachChild(floorGeometry2);
+
     }
 
     private void initHome() {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        mat.setColor("Color", ColorRGBA.Black);
+        mat.setTexture("ColorMap", assetManager.loadTexture("photos/home.jpg"));
 
         Box HomeBox = new Box(26, 15, 18);
         Geometry HomeGeometry = new Geometry("Home", HomeBox);
@@ -709,7 +741,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                     hashingzombiecontrol.remove(z.getControl(), z);
 
                 } catch (Exception e) {
-                    System.out.println("zombie dell");
                 }
             }
             if (dis > 2 * side) {
@@ -737,34 +768,31 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         if (stat == 1) {
             SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
-            SoundNode.setLooping(true);  // activate continuous playing
-            SoundNode.setPositional(false);
-            SoundNode.setVolume(3);
-            lvl.attachChild(SoundNode);
-            SoundNode.play();
         } else if (stat == 2) {
-            //SoundNode = new AudioNode(assetManager, "", DataType.Stream); // put path of lose sound
-            SoundNode.setLooping(true);  // activate continuous playing
-            SoundNode.setPositional(false);
-            SoundNode.setVolume(3);
-            lvl.attachChild(SoundNode);
-            SoundNode.play();
+            //lose sound
+            SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
+        } else if (stat == 3) {
+            //win sound
+            SoundNode = new AudioNode(assetManager, "Sounds/BackGround.ogg", DataType.Stream);
         }
+
+        SoundNode.setName("sound");
+        SoundNode.setLooping(true);  
+        SoundNode.setPositional(false);
+        SoundNode.setVolume(3);
+        lvl.attachChild(SoundNode);
+        SoundNode.play();
+
     }
 
     private void initScoreText() {
-        BitmapFont font = assetManager.loadFont("Interface/Fonts/Console.fnt");
+
+        BitmapFont font = assetManager.loadFont("Fonts/zeft6.fnt");
 
         scoreText = new BitmapText(font);
         scoreText.setSize(1f);
-
-        scoreText.setColor(ColorRGBA.Blue);
-
         scoreText.setText("score:\n" + Integer.toString(score));
         lvl.attachChild(scoreText);
-        /*
-        scoreText.setLocalTranslation(2f, 5, -26.5f);
-        scoreText.rotate(-(float) Math.PI / 2, 0, 0);*/
     }
 
     private void sleep(int time) {
@@ -779,6 +807,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         printText.setColor(color);
         printText.setText(text);
+    
 
         if (cameraStatus == 4 || cameraStatus == -1) {
             printText.setLocalTranslation(new Vector3f(-5.0f, 10.0f, -24.0f));
@@ -805,5 +834,30 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     public void onAnimChange(AnimControl control, AnimChannel channel, String animName) {
 
     }
+
+    private void Close() {
+       ((AudioNode)lvl.getChild("sound")).stop();
+        app.getRootNode().detachChild(lvl);
+        app.getStateManager().attach(new theGameMenu(app));
+        app.getStateManager().detach(app.getStateManager().getState(level.class));
+
+    }
+    
+   private void cheating()
+    {
+        printText.setSize(4);
+        printTextOnScreen("YOU Cheated", ColorRGBA.Red);
+        while(!pq.isEmpty())
+        pq.remove();
+        for (Zombie zomb1 : zomb) {
+            zomb1.damage(zomb1.getHealth());
+            zomb1.dying();
+        }
+            
+        
+        
+    }
+    
+    
 
 }

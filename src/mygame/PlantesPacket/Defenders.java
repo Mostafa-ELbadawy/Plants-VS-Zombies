@@ -22,7 +22,6 @@ public abstract class Defenders extends plant{
         super(asset);
     }
       
-       @Override
      public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
      idel();
      }

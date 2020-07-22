@@ -25,7 +25,6 @@ public class Generator {
 
     public static PriorityQueue<pair> genrate(int level) {
         counter = 0;
-        float dourt = 300;
         int numOfWaves = 1;
         if (level % 5 == 4) {
             numOfWaves = 3;
@@ -64,7 +63,7 @@ public class Generator {
         while (now <= to) {
             q.add(randomezompie(now, now + 1, mxindex));
             counter++;
-            now += 5;
+            now += 8;
         }
 
     }

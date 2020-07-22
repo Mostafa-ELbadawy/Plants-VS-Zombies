@@ -16,7 +16,7 @@ import com.jme3.scene.Node;
  *
  * @author DELL
  */
-public abstract class plant extends plantObject {
+public abstract class plant implements plantObject {
 
     protected final AssetManager assetManager;
     protected float health;

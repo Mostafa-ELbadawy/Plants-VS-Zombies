@@ -5,12 +5,9 @@
  */
 package mygame.PlantesPacket;
 
-import com.jme3.animation.LoopMode;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.collision.CollisionResults;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -34,7 +31,7 @@ public abstract class Attackers extends plant {
 
     }
 
-    @Override
+   
     public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
 
         CollisionResults results = new CollisionResults();

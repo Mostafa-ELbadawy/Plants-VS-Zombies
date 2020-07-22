@@ -14,7 +14,7 @@ import mygame.allObjects.Bullet;
  *
  * @author DELL
  */
-public abstract class plantObject {
+public interface plantObject {
     
     public abstract void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) ;
 }

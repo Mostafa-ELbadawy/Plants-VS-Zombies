@@ -9,13 +9,9 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetManager;
-import com.jme3.input.FlyByCamera;
-import com.jme3.input.InputManager;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.renderer.Camera;
-import com.jme3.scene.Node;
-import com.jme3.system.Timer;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.ImageBuilder;
 import de.lessvoid.nifty.builder.LayerBuilder;
@@ -24,55 +20,66 @@ import de.lessvoid.nifty.builder.ScreenBuilder;
 import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import de.lessvoid.nifty.screen.DefaultScreenController;
-import de.lessvoid.nifty.tools.SizeValue;
+import java.io.FileInputStream;
+import java.util.Scanner;
 
 /**
  *
  * @author DELL
  */
 public class theGameMenu extends AbstractAppState implements ScreenController {
-//private Background manu_img;
 
-    private Camera camera;
-    private FlyByCamera flyByCamera;
-    private Node root;
-    private AssetManager assetManager;
-    private InputManager inputManager;
-    private Timer timer;
-    private Node guiNode;
+    private AudioNode SoundNode;
     private SimpleApplication app;
-    private NiftyJmeDisplay niftyDisplay;
     private Nifty nifty;
-    private ButtonBuilder btn;
-    private int level;
+    private NiftyJmeDisplay niftyDisplay;
 
     public theGameMenu(SimpleApplication app) {
-        camera = app.getCamera();
-        flyByCamera = app.getFlyByCamera();
-        root = app.getRootNode();
-        assetManager = app.getAssetManager();
-        inputManager = app.getInputManager();
-        timer = app.getTimer();
-        guiNode = app.getGuiNode();
 
         this.app = app;
+        System.out.println("YOua add manu");
 
     }
 
+    //////
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
-
         super.initialize(stateManager, app);
         GUI();
     }
 
+    int GetLevel() {
+        int level = 1;
+        Scanner input;
+        try {
+            input = new Scanner(new FileInputStream("assets/files/level.txt"));
+        } catch (Exception e) {
+            return 1;
+        }
+        return input.next().charAt(0);
+
+    }
+
+    private void sleep(int time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            System.out.println("sleep error");
+        }
+    }
+
     public void StartGame() {
-        
-        
-        app.getStateManager().attach(new level(app,/*level*/100));
+
+       
+        System.out.println("done" + GetLevel());
+        ((AudioNode) app.getRootNode().getChild("sound")).stop();
+        app.getRootNode().detachChildNamed("sound");
+        app.getStateManager().attach(new level(app, GetLevel()));
         app.getGuiViewPort().removeProcessor(getNiftyDisplay());
-        
+    }
+
+    public void endgame() {
+        System.exit(0);
     }
 
     private NiftyJmeDisplay getNiftyDisplay() {
@@ -85,55 +92,21 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
 
     }
 
-    public void cardlist() {
-
-        niftyDisplay = getNiftyDisplay();
-        nifty = niftyDisplay.getNifty();
-        System.out.println("mygame.allObjects.theGameMenu.cardlist()");
-        nifty.addScreen("card list", new ScreenBuilder("Hello Nifty Screen") {
-            {
-                controller(new DefaultScreenController());
-                System.out.println(".cardlist()");
-                layer(new LayerBuilder("background") {
-                    {
-                        childLayoutVertical(); // layer properties, add more...
-                        backgroundColor("#0000ff");
-                        // add image
-                        image(new ImageBuilder() {
-                            {
-                                childLayoutCenter();
-                                filename("photos/cards_img.jpg");
-                                height("100%");
-                                width("100%");
-                            }
-                        });
-                    }
-                });
-
-            }
-        }.build(nifty));
-        //nifty.getCurrentScreen().endScreen("empty");
-        nifty.gotoScreen("card list"); // start the screen
-    }
-
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        System.out.println("You bind the screen");
     }
 
     @Override
     public void onStartScreen() {
-        System.out.println("You start the screen");
     }
 
     @Override
     public void onEndScreen() {
-        System.out.println("You end the screen`");
     }
 
     public void GUI() {
 
-        niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(assetManager, app.getInputManager(), app.getAudioRenderer(), app.getGuiViewPort());
+        niftyDisplay = NiftyJmeDisplay.newNiftyJmeDisplay(app.getAssetManager(), app.getInputManager(), app.getAudioRenderer(), app.getGuiViewPort());
         nifty = niftyDisplay.getNifty();
 
         app.getGuiViewPort().addProcessor(niftyDisplay);
@@ -141,84 +114,69 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
         app.getFlyByCamera().setDragToRotate(true);
         nifty.loadStyleFile("nifty-default-styles.xml");
         nifty.loadControlFile("nifty-default-controls.xml");
+        SoundNode = new AudioNode(app.getAssetManager(), "Sounds/BackGround.ogg", AudioData.DataType.Stream);
+        SoundNode.setName("sound");
+        SoundNode.setLooping(true);  // activate continuous playing
+        SoundNode.setPositional(false);
+        SoundNode.setVolume(3);
 
+        app.getRootNode().attachChild(SoundNode);
+        SoundNode.play();
 
         mainMenu();
 
     }
 
     private void mainMenu() {
-        // <screen>
+
         nifty.addScreen("Main Screen", new ScreenBuilder("Hello Nifty Screen") {
             {
-                controller(new mygame.theGameMenu(app)); // Screen properties
+                controller(new mygame.theGameMenu(app));
 
-                // <layer>
                 layer(new LayerBuilder("background") {
                     {
-                        childLayoutVertical(); // layer properties, add more...
-                        // backgroundColor("#00ff00");
-                        // add image
+                        childLayoutVertical();
                         image(new ImageBuilder() {
                             {
                                 childLayoutCenter();
-                                filename("photos/menu_img1.jpg");
+                                filename("photos/menu_img1.png");
                                 height("100%");
                                 width("100%");
 
-                                // <panel>
                                 panel(new PanelBuilder("Panel02") {
                                     {
-                                        childLayoutCenter(); // panel properties, add more...
-                                        //    backgroundColor("#88f8");
-
+                                        childLayoutCenter();
+                                        alignCenter();
                                         height("40%");
-                                        width("15%");
-
-                                        // GUI elements
-                                        control(new ButtonBuilder("Button01", "Start Game") {
-                                            {
-                                                // alignCenter();
+                                        width("60%");
+                                        /*
+                                        control(new ButtonBuilder("Button02", "") {
+                                            {                                              
                                                 valignTop();
-                                                // valignCenter();
-                                                height("20%");
-                                                width("100%");
-
+                                                height("0%");
+                                                width("0%");
+                                            }
+                                        });
+                                         */
+                                        control(new ButtonBuilder("Button01", "START GAME") {
+                                            {
+                                                valignCenter();
+                                                backgroundColor("#CC5C5C");
+                                                valignTop();
+                                                height("30%");
+                                                width("30%");
                                                 interactOnClick("StartGame()");
 
                                             }
                                         });
-
-                                        // GUI elements
-                                        //.. add more GUI elements here
-                                        control(new ButtonBuilder("Button02", "Options") {
+                                        control(new ButtonBuilder("Button02", "EXIT") {
                                             {
-                                                //alignCenter();
-                                                //valignTop();
-                                                //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
+
                                                 valignCenter();
-                                                System.out.println("////////////////");
-                                                x(SizeValue.px(2));
-                                                y(SizeValue.px(2));
-                                                backgroundColor("#ff3CB371");
-
-                                                height("20%");
-                                                width("100%");
-                                                interactOnClick("cardlist()");
-
-                                            }
-                                        });
-
-                                        control(new ButtonBuilder("Button03", "Exit") {
-                                            {
-                                                //alignCenter();
-                                                //valignTop();
-                                                //  backgroundColor(de.lessvoid.nifty.tools.Color.WHITE);
-                                                valignBottom();
-
-                                                height("20%");
-                                                width("100%");
-                                                interactOnClick("test()");
+                                                backgroundColor("#088DA5");
+                                                height("30%");
+                                                width("30%");
+                                                interactOnClick("endgame()");
 
                                             }
                                         });
@@ -232,157 +190,14 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
                     }
                 });
 
-                /* layer(new LayerBuilder("Layer02") {{
-                  childLayoutVertical(); // layer properties, add more...
-          
-panel(new PanelBuilder("panel_up_left") {{
-    childLayoutCenter();
-                       childLayoutCenter(); // panel properties, add more...
-                 childLayoutHorizontal();
-    valignCenter();
-   
-    height("50%");
-    width("60%");
-    //panel(this);
-    // add control
-    control(new ButtonBuilder("StartButton", "Start") {{
-    
-        alignCenter();
-       valignCenter();
-     
-       
-       alignLeft();
-        alignRight();
-        height("10%");
-        width("20%");
-          interactOnClick("test()");
-       
-    }});
- 
-      control(new ButtonBuilder("QuitButton", "Quit") {{
-          
-           valignCenter();
-        alignLeft();
-        alignRight();
-        alignCenter();
-        
-        height("10%");
-        width("20%");
-        interactOnClick("test()");
-    }});
-     }});*/
- /*panel(new PanelBuilder("panel_up_right") {{
-    childLayoutCenter();
-    valignCenter();
-    backgroundColor("#88f8");
-    height("20%");
-    width("20%");
-
-    // add control
-    control(new ButtonBuilder("QuitButton", "Quit") {{
-        alignCenter();
-        valignCenter();
-        height("100%");
-        width("100%");
-    }});
-}});
- }}); */
-                ///////////////////
-                /*layer(new LayerBuilder("Layer01") {{
-
-               
-                childLayoutVertical(); // layer properties, add more...
-                // <panel>
-                
-                panel(new PanelBuilder("Panel01") {{
-                   childLayoutCenter(); // panel properties, add more...
-                 childLayoutHorizontal();
-                  
-                       
-                   height("10%");
-                        width("10%");
-                    
-                          
-                    // GUI elements
-                    control(new ButtonBuilder("Button01", "Start Game"){{
-                        alignCenter();
-                       // valignCenter();
-                       
-                        height("5%");
-                        width("15%");
-                        interactOnClick("test()");
-                        
-                    }});
-                    
-                    // GUI elements
-                    
-
-                    //.. add more GUI elements here
-
-                  control(new ButtonBuilder("Button01", "Start Game2"){{
-                        alignCenter();
-                     //   valignTop();
-                        
-                       
-                        height("5%");
-                        width("15%");
-                        interactOnClick("test()");
-                        
-                    }});
-                  
-                }}); 
-                
-                panel(new PanelBuilder("Panel02") {{
-                   childLayoutCenter(); // panel properties, add more...
-                 childLayoutHorizontal();
-                  
-                       
-                   height("200%");
-                        width("200%");
-                    
-                          
-                    // GUI elements
-                    control(new ButtonBuilder("Button02", "Start Game"){{
-                        alignCenter();
-                       // valignCenter();
-                       
-                        height("5%");
-                        width("15%");
-                        interactOnClick("test()");
-                        
-                    }});
-                    
-                    // GUI elements
-                    
-
-                    //.. add more GUI elements here
-
-                  control(new ButtonBuilder("Button02", "Start Game2"){{
-                        alignCenter();
-                     //   valignTop();
-                        
-                       
-                        height("5%");
-                        width("15%");
-                        interactOnClick("test()");
-                        
-                    }});
-                  
-                }});
-                
-            
-                  
-              }}); */
             }
 
-            private void panel(PanelBuilder panelBuilder) {
-
-                //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
         }.build(nifty));
 
         nifty.gotoScreen("Main Screen"); // start the screen
 
     }
+
+    
 
 }

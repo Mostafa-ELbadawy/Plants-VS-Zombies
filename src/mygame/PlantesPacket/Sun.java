@@ -41,7 +41,7 @@ public class Sun {
     public Sun(float score) {
 
         this.score = score;
-        Sphere sun = new Sphere(32, 32, 1f, true, false);
+        Sphere sun = new Sphere(32, 32, 2f, true, false);
         sun.setTextureMode(Sphere.TextureMode.Projected);
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

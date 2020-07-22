@@ -44,7 +44,7 @@ public class SunFlower extends Attackers {
         this.node.rotate(0, (float) Math.PI / 2, 0);
 
         attackPower = 25;
-        attackSpeed = 6;
+        attackSpeed = 15;
     }
 
     @Override
