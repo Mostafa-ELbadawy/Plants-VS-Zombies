@@ -89,10 +89,9 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private final InputManager inputManager;
     private BulletAppState bulletAppState;
 
-    
     private LinkedList<Zombie> zomb;
     private LinkedList<plant> plan;
-   
+
     private LinkedList<Car> cars;
     private LinkedList<Sun> sunsVector;
     private LinkedList<BombEffect> bombVector;
@@ -122,7 +121,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private Node cardsNode;
     BitmapText levelText, printText;
     BitmapFont font;
-    int c = 0;
+   
 
     public level(SimpleApplication app, int level) {
         this(app, level, 1);
@@ -141,7 +140,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         renderManager = app.getRenderManager();
         this.level = level;
         this.soundVolume = volume;
-        System.out.println("YOua add level");
     }
 
     @Override
@@ -236,18 +234,17 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             cardsNode.attachChild(cardsVector.get(i).getNode());
         }
 
-        chooseCase();
     }
 
     void addplant(int row, int col, int typ) {
         curCard = new Card(typ, 0, 0, 0, assetManager, "Blender/mainBG.png");
- 
+
         try {
-            
-        addplant(new Vector3f(col * side, 0, -row * side));
+
+            addplant(new Vector3f(col * side, 0, -row * side));
         } catch (Exception e) {
         }
-        
+
     }
 
     void addrow(int row, int typ) {
@@ -259,40 +256,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    void chooseCase() {
-        if (c == 1) {
-
-            addrow(0, 3);
-            addrow(1, 1);
-            addrow(2, 4);
-            addrow(3, 2);
-
-       
-        }
-
-    }
-
-    void chosecaseupdate() {
-        if (timer.getTimeInSeconds() >= 20) {
-            if (c == 1) {
-                addzombie(3);
-                addzombie(3);
-                addzombie(2);
-                addzombie(2);
-                addzombie(2);
-                addzombie(4);
-                addzombie(4);
-                addzombie(3);
-
-            }
-            c = 0;
-        }
-
-    }
-
     @Override
     public void update(float tpf) {
-        chosecaseupdate();
         if (dead) {
             sleep(5000);
             if (loseStatus == 1) {
@@ -336,7 +301,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         }
 
-    
     }
 
     public void checkAllBombs() {
@@ -452,15 +416,16 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    private void addplant(Vector3f v) throws ScoreException{
+    private void addplant(Vector3f v) throws ScoreException {
 
         int col = (int) (v.x / side), row = (int) -(v.z / side);
         if (curCard == null) {
             return;
         }
-        if (curCard.getCost() <= score)
+        if (curCard.getCost() > score) {
             throw new ScoreException();
-        if (is_valid(row, col) ) {
+        }
+        if (is_valid(row, col)) {
 
             if (curCard.getTyp() == 1) {
                 plan.add(new Grean_Plant(assetManager));
@@ -612,12 +577,12 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
                 flyByCamera.setEnabled(!flyByCamera.isEnabled());
                 if (!pos.equals(new Vector3f(-100, -100, -100))) {
                     try {
-                    addplant(pos);
-                        
+                        addplant(pos);
+
                     } catch (ScoreException e) {
                         System.out.println(e.getMessage());
                     }
-                    
+
                 }
             } else if (name.equals("exit") && !keyPressed) {
                 Close();
@@ -702,7 +667,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         inputManager.addMapping("cheating", new KeyTrigger(KeyInput.KEY_F2));
         inputManager.addListener(actionListener, "cheating");
     }
-    
+
     private void initFloor() {
 
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
@@ -719,7 +684,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         lvl.attachChild(floorGeometry);
         space.add(floorGeometry);
 
-        Material mat2 = assetManager.loadMaterial("Materials/road_mat.j3m");
+        Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+        mat2.setTexture("ColorMap", assetManager.loadTexture("photos/Floor2.jpg"));
+      
+        //Material mat2 = assetManager.loadMaterial("Materials/road_mat.j3m");
         Box floorBox2 = new Box(100, 0.25f, 18);
         Geometry floorGeometry2 = new Geometry("Floor2", floorBox2);
         floorGeometry2.setMaterial(mat2);
@@ -897,7 +865,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void Close() {
-      
+
         SoundNode.stop();
         SoundNode.setVolume(0);
         app.getRootNode().detachChild(lvl);

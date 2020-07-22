@@ -16,12 +16,12 @@ import java.util.Random;
  */
 public class Generator {
 
-    static int[] zomptyps = new int[]{1, 1, 1, 1, 1, 1, 2, 2, 3, 4};
-    static int[] typsMxIndex = new int[]{6, 8, 9, 10};
+    private static int[] zomptyps = new int[]{1, 1, 1, 1, 1, 1, 2, 2, 3, 4};
+    private static int[] typsMxIndex = new int[]{6, 8, 9, 10};
 
-    static int mnzombie = 60, Mxzombie = 500;
-    static Random rand = new Random();
-    static int counter = 0, MX = 3;
+    private static int mnzombie = 60, Mxzombie = 500;
+    private static Random rand = new Random();
+    private static int counter = 0, MX = 3;
 
     public static PriorityQueue<pair> genrate(int level) {
         counter = 0;
@@ -49,7 +49,7 @@ public class Generator {
             Wave(80, 110, typsMxIndex[Math.min(MX, MXtyp)], q, totalZombies / (numOfWaves + 2));
             Normal(125, 170, typsMxIndex[Math.min(1, MXtyp)], q);
             Wave(170, 200, typsMxIndex[Math.min(MX, MXtyp)], q, totalZombies / (numOfWaves + 2));
-            Normal(215, 270, typsMxIndex[Math.min(1, MXtyp)], q); 
+            Normal(215, 270, typsMxIndex[Math.min(1, MXtyp)], q);
 
         }
         Wave(270, 300, typsMxIndex[Math.min(MX, MXtyp)], q, totalZombies / (numOfWaves + 2));

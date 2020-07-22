@@ -114,7 +114,7 @@ public class Sun {
 
     }
 
-    public static void initStaticSun(AssetManager assetManager, LinkedList<Sun> sunsVector, Node lvl, PhysicsSpace space, HashMap<Geometry, Sun> hashingSun) {
+    public final static void initStaticSun(AssetManager assetManager, LinkedList<Sun> sunsVector, Node lvl, PhysicsSpace space, HashMap<Geometry, Sun> hashingSun) {
         Sun.assetManager = assetManager;
         Sun.sunsVector = sunsVector;
         Sun.lvl = lvl;

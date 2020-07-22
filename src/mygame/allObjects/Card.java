@@ -6,9 +6,7 @@ import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Quad;
 import com.jme3.ui.Picture;
 import java.util.Scanner;
 import java.io.FileInputStream;
@@ -33,7 +31,7 @@ public class Card {
         this.assetManager = assetManager;
         this.imgPass = imgPass;
         node = createCard(imgPass);
-        pic=createCardpic(imgPass);
+        pic = createCardpic(imgPass);
 
     }
 
@@ -102,54 +100,30 @@ public class Card {
     }
 
     private Geometry createCard(String pass) {
-         Box box = new Box( 2f,2f,0.01f);
-      //  Box box = new Box( 20f,20f,20f);
-       
-       //Quad box = new Quad(4, 4);
+        Box box = new Box(2f, 2f, 0.01f);
+
         Geometry cube = new Geometry("card", box);
 
         Material Mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         Mat.setColor("Color", ColorRGBA.DarkGray);
-      //  Mat.setColor("ShadowColor", ColorRGBA.DarkGray);
-      
+
         Mat.setTexture("ColorMap", assetManager.loadTexture(pass));
-             Mat.getAdditionalRenderState().setDepthWrite(false);
-       Mat.getAdditionalRenderState().setDepthTest(false); 
+        Mat.getAdditionalRenderState().setDepthWrite(false);
+        Mat.getAdditionalRenderState().setDepthTest(false);
         Mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-   
-       
-        
-        
-        
+
         cube.setQueueBucket(RenderQueue.Bucket.Transparent);
         cube.setMaterial(Mat);
         cube.setLocalTranslation(0, 0, 0);
-        
+
         cube.updateLogicalState(0.1f);
         cube.updateGeometricState();
 
-        
-        
         return cube;
 
     }
 
     private Picture createCardpic(String pass) {
-        //Box box = new Box( 2f,2f,0.01f);
-        /*
-        Quad box =new Quad(4, 4);
-        Geometry cube = new Geometry("card", box);
-        
-        
-        Material Mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-        Mat.setColor("Color", ColorRGBA.DarkGray);
-        Mat.setTexture("ColorMap",assetManager.loadTexture(pass));
-        Mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        cube.setQueueBucket(RenderQueue.Bucket.Transparent);
-        cube.setMaterial(Mat);
-        cube.setLocalTranslation(0, 0, 0);
-   
-        /*/
 
         Picture pic = new Picture("card");
         pic.setImage(assetManager, pass, true);
@@ -167,17 +141,6 @@ public class Card {
         this.pic = pic;
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     public static ArrayList<Card> loadCards(AssetManager assetManager, HashMap<Geometry, Card> hashingCard) throws FileNotFoundException {
         ArrayList<Card> vector = new ArrayList<>();
         FileInputStream file = new FileInputStream("assets/files/plantsCards.txt");
@@ -191,22 +154,16 @@ public class Card {
             String pass = scan.next();
             Card card = new Card(typ, cost, -5, time, assetManager, pass);
             hashingCard.put(card.getNode(), card);
-           card.getNode().setLocalTranslation(ind*4+8f, 5f, -27);
-           ///   card.getNode().setLocalTranslation(ind * 40+200 , 5, 40);
-            card.getPic().setPosition(ind * 40 +200, 200);
+            card.getNode().setLocalTranslation(ind * 4 + 8f, 5f, -27);
+            card.getPic().setPosition(ind * 40 + 200, 200);
 
-       //     card.getNode().rotate(-(float)Math.PI/2, 0, 0);
             ind++;
             vector.add(card);
 
-            // System.out.println("#typ= "+typ+" cost= "+cost+" time= "+time+" pass="+pass);
         }
         scan.close();
         return vector;
 
     }
-    
-    
-    
 
 }
