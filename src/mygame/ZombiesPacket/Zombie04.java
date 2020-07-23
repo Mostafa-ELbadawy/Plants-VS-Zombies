@@ -12,26 +12,26 @@ import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.scene.Node;
+
 /**
  *
  * @author DELL
  */
 public class Zombie04 extends Zombie {
 
-    public Zombie04(AssetManager asset) {
+    private static Node model;
 
-        super(asset);
-        Node node = (Node) assetManager.loadModel("Blender/zombie04/zombie.j3o");
+    public Zombie04() {
+
+        super();
+        Node node = (Node) model.clone();
         name = "zombie";
-        node = (Node) node.getChild(name);
         this.node = node;
-
-        this.node.addLight(new AmbientLight());
 
         phyControl = new RigidBodyControl(0);
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        this.node.addControl(phyControl);
+        node.addControl(phyControl);
         phyControl.activate();
 
         node = (Node) node.getChild("zombie2");
@@ -43,8 +43,14 @@ public class Zombie04 extends Zombie {
         attackSpeed = 3;
         movingSpeed = 5.0f;
 
-        
+    }
 
+    public static void loadmodle(AssetManager asset) {
+
+        assetManager = asset;
+        model = (Node) assetManager.loadModel("Blender/zombie04/zombie.j3o");
+        model = (Node) model.getChild("zombie");
+        model.addLight(new AmbientLight());
     }
 
 }

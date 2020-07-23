@@ -18,7 +18,7 @@ import com.jme3.scene.Node;
  */
 public abstract class plant implements plantObject {
 
-    protected final AssetManager assetManager;
+    protected static AssetManager assetManager;
     protected float health;
     protected Node node;
     protected AnimControl control;
@@ -27,9 +27,8 @@ public abstract class plant implements plantObject {
     private int row, col;
     protected RigidBodyControl phyControl;
 
-    public plant(AssetManager asset) {
+    public plant() {
         health = 100;
-        this.assetManager = asset;
         node = null;
         name = null;
         row = 0;

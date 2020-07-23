@@ -24,28 +24,21 @@ import mygame.allObjects.Bullet;
  */
 public class Grean_Plant extends Attackers {
 
-    public Grean_Plant(AssetManager asset) {
-        super(asset);
+    private static Node model;
 
-        Node node = (Node) assetManager.loadModel("Blender/Green_plant/Green_plant.j3o");
+    public Grean_Plant() {
+        super();
+
+        Node node = (Node) model.clone();
         this.node = node;
-        this.node.setName("plant");
-        node.setLocalScale(2.5f);
-        this.node.rotate(0, -(float) Math.PI / 2, 0);
 
         name = "plant";
         Node zomb = (Node) node.getChild(name);
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
 
+        phyControl = node.getControl(RigidBodyControl.class);
 
-        phyControl = new RigidBodyControl(0);
-        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        this.node.addControl(phyControl);
-
-       
     }
 
     @Override
@@ -64,6 +57,20 @@ public class Grean_Plant extends Attackers {
             channal.setLoopMode(LoopMode.DontLoop);
         }
 
+    }
+
+    public static void loadmodle(AssetManager asset) {
+
+        assetManager = asset;
+        model = (Node) assetManager.loadModel("Blender/Green_plant/Green_plant.j3o");
+        RigidBodyControl phyControl = new RigidBodyControl(0);
+        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        model.addControl(phyControl);
+        model.setName("plant");
+        model.setLocalScale(2.5f);
+        model.rotate(0, -(float) Math.PI / 2, 0);
     }
 
 }

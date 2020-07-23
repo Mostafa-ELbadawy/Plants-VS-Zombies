@@ -25,30 +25,22 @@ import mygame.allObjects.Bullet;
  */
 public class Jumper extends Attackers {
 
-    public Jumper(AssetManager asset) {
-        super(asset);
+    private static Node model;
 
-        Node node = (Node) assetManager.loadModel("Blender/Jumper/Jumper.j3o");
+    public Jumper() {
+        super();
+
+        Node node = (Node) model.clone();
         this.node = node;
-        this.node.setName("plant");
-        node.setLocalScale(2.5f);
-     
 
         name = "plant";
         Node zomb = (Node) node.getChild(name);
-     
+
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
 
+        phyControl = node.getControl(RigidBodyControl.class);
 
-        phyControl = new RigidBodyControl(0);
-        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        this.node.addControl(phyControl);
-
-
-        //this.node.rotate(0, (float) Math.PI / 2, 0);
     }
 
     @Override
@@ -69,7 +61,7 @@ public class Jumper extends Attackers {
         boolean isAttack = false;
 
         for (int i = 0; i < results.size(); i++) {
-           
+
             String hitName = results.getCollision(i).getGeometry().getName();
             float dis = results.getCollision(i).getDistance();
 
@@ -85,6 +77,20 @@ public class Jumper extends Attackers {
         } else {
             idel();
         }
+
+    }
+
+    public static void loadmodle(AssetManager asset) {
+
+        assetManager = asset;
+        model = (Node) assetManager.loadModel("Blender/Jumper/Jumper.j3o");
+        RigidBodyControl phyControl = new RigidBodyControl(0);
+        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        model.addControl(phyControl);
+        model.setName("plant");
+        model.setLocalScale(2.5f);
 
     }
 

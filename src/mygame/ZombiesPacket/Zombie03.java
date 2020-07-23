@@ -19,20 +19,18 @@ import com.jme3.light.AmbientLight;
  */
 public class Zombie03 extends Zombie {
 
-//private final AnimEventListener listener;`
-    public Zombie03(AssetManager asset) {
+    private static Node model;
 
-        super(asset);
-        Node node = (Node) assetManager.loadModel("Blender/zombie03/zombie.j3o");
-        node = (Node) node.getChild("zombie");
+    public Zombie03() {
+
+        super();
+        Node node = (Node) model.clone();
         this.node = node;
-
-        this.node.addLight(new AmbientLight());
-        
         phyControl = new RigidBodyControl(0);
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        this.node.addControl(phyControl);
+        node.addControl(phyControl);
+
         phyControl.activate();
 
         name = "Jill_HiRes_Teeth_Geo";
@@ -40,11 +38,18 @@ public class Zombie03 extends Zombie {
         control = node.getControl(AnimControl.class);
         channal = control.createChannel();
 
-        health = 170;
+        health = 100;
         attackPower = 35;
         attackSpeed = 3;
         movingSpeed = 2.0f;
 
     }
 
+    public static void loadmodle(AssetManager asset) {
+
+        assetManager = asset;
+        model = (Node) assetManager.loadModel("Blender/zombie03/zombie.j3o");
+        model = (Node) model.getChild("zombie");
+        model.addLight(new AmbientLight());
+    }
 }

@@ -19,32 +19,37 @@ import com.jme3.light.AmbientLight;
  */
 public class Zombie02 extends Zombie {
 
-    public Zombie02(AssetManager asset) {
+    private static Node model;
 
-        super(asset);
-        Node node = (Node) assetManager.loadModel("Blender/zombie02/zombie02.j3o");
-        name = "zombie";
-        node = (Node) node.getChild(name);
+    public Zombie02() {
+
+        super();
+        Node node = (Node) model.clone();
         this.node = node;
-        this.node.addLight(new AmbientLight());
-        
-        phyControl = new RigidBodyControl(0);
-        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        this.node.addControl(phyControl);
+        name = "zombie";
 
         node = (Node) node.getChild("zombie2");
         control = node.getControl(AnimControl.class);
         channal = control.createChannel();
+
+        phyControl = new RigidBodyControl(0);
+        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        node.addControl(phyControl);
         phyControl.activate();
- 
-        health = 150;
+
+        health = 170;
         attackPower = 25;
         attackSpeed = 3;
         movingSpeed = 2.0f;
-        
+    }
 
+    public static void loadmodle(AssetManager asset) {
 
+        assetManager = asset;
+        model = (Node) assetManager.loadModel("Blender/zombie02/zombie02.j3o");
+        model = (Node) model.getChild("zombie");
+        model.addLight(new AmbientLight());
     }
 
 }

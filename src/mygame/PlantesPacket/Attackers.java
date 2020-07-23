@@ -22,8 +22,8 @@ public abstract class Attackers extends plant {
 
     protected float attackPower, attackSpeed, lastAttack, effect, effectTime;
 
-    public Attackers(AssetManager asset) {
-        super(asset);
+    public Attackers() {
+        super();
         attackPower = 30;
         attackSpeed = 3;
         lastAttack = -1;

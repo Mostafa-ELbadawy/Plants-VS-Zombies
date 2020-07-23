@@ -34,9 +34,9 @@ public abstract class Zombie {
     protected AnimControl control;
     protected AnimChannel channal;
     protected RigidBodyControl phyControl;
-    protected AssetManager assetManager;
+    protected static AssetManager assetManager;
 
-    public Zombie(AssetManager assetManager) {
+    public Zombie() {
         name = null;
         health = 100;
         attackPower = 30;
@@ -46,7 +46,6 @@ public abstract class Zombie {
         row = 0;
         poisonEffect = 0;
         poisonTime = 0;
-        this.assetManager = assetManager;
     }
 
     public int getRow() {

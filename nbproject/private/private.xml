@@ -3,13 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/addetions/ScoreException.java</file>
-            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/plantObject.java</file>
-            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/plant.java</file>
+            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/ZombiesPacket/Zombie03.java</file>
+            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/Frozzen_plant.java</file>
+            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/ZombiesPacket/Zombie01.java</file>
+            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/ZombiesPacket/Zombie02.java</file>
             <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/level.java</file>
-            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/Sun.java</file>
-            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/Attackers.java</file>
-            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/Defenders.java</file>
+            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/PlantesPacket/Bomb.java</file>
+            <file>file:/F:/JME%20Projects/Plants%20VS%20Zombies/src/mygame/ZombiesPacket/Zombie04.java</file>
         </group>
     </open-files>
 </project-private>

@@ -15,26 +15,34 @@ import com.jme3.scene.Node;
  * @author DELL
  */
 public class Potato extends Defenders {
+private static Node model;
+    public Potato() {
+        super();
 
-    public Potato(AssetManager asset) {
-        super(asset);
-
-        Node node = (Node) assetManager.loadModel("Blender/potato/potato.j3o");
+        Node node = (Node) model.clone();
         this.node = node;
-        this.node.setName("plant");
 
         control = null;
         channal = null;
 
-        phyControl = new RigidBodyControl(0);
+        phyControl = node.getControl(RigidBodyControl.class);
+
+
+        health = 200;
+    }
+
+        public static void loadmodle(AssetManager asset) {
+           
+           assetManager=asset;
+           model=(Node) assetManager.loadModel("Blender/potato/potato.j3o");
+           RigidBodyControl phyControl = new RigidBodyControl(0);
         phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        this.node.addControl(phyControl);
-
-        this.node.rotate(0, (float) Math.PI / 2, 0);
-
-        health = 200;
+        model.addControl(phyControl);
+        model.setName("plant");
+            model.rotate(0, (float) Math.PI / 2, 0);
+       
     }
 
 }

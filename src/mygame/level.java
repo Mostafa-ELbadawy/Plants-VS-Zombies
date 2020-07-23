@@ -121,7 +121,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     private Node cardsNode;
     BitmapText levelText, printText;
     BitmapFont font;
-   
 
     public level(SimpleApplication app, int level) {
         this(app, level, 1);
@@ -146,6 +145,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     public void initialize(AppStateManager stateManager, Application app) {
 
         super.initialize(stateManager, app);
+        loadAllModels();
 
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -236,24 +236,20 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     }
 
-    void addplant(int row, int col, int typ) {
-        curCard = new Card(typ, 0, 0, 0, assetManager, "Blender/mainBG.png");
-
-        try {
-
-            addplant(new Vector3f(col * side, 0, -row * side));
-        } catch (Exception e) {
-        }
-
-    }
-
-    void addrow(int row, int typ) {
-        addplant(0, row, typ);
-        addplant(1, row, typ);
-        addplant(2, row, typ);
-        addplant(3, row, typ);
-        addplant(4, row, typ);
-
+    
+    private void loadAllModels()
+    {
+        Bomb.loadmodle(assetManager);
+        Jumper.loadmodle(assetManager);
+        Potato.loadmodle(assetManager);
+        Zombie01.loadmodle(assetManager);
+        Zombie02.loadmodle(assetManager);
+        Zombie03.loadmodle(assetManager);
+        Zombie04.loadmodle(assetManager);
+        SunFlower.loadmodle(assetManager);
+        Grean_Plant.loadmodle(assetManager);
+        Frozzen_plant.loadmodle(assetManager);
+        
     }
 
     @Override
@@ -393,13 +389,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         int row = FastMath.nextRandomInt(0, 4);
         if (typ == 1) {
-            zomb.add(new Zombie03(assetManager));
+            zomb.add(new Zombie04());
         } else if (typ == 2) {
-            zomb.add(new Zombie02(assetManager));
+            zomb.add(new Zombie02());
         } else if (typ == 3) {
-            zomb.add(new Zombie01(assetManager));
+            zomb.add(new Zombie03());
         } else if (typ == 4) {
-            zomb.add(new Zombie04(assetManager));
+            zomb.add(new Zombie01());
         }
 
         zomb.getLast().setRow(row);
@@ -428,21 +424,21 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
         if (is_valid(row, col)) {
 
             if (curCard.getTyp() == 1) {
-                plan.add(new Grean_Plant(assetManager));
+                plan.add(new Grean_Plant());
             } else if (curCard.getTyp() == 2) {
-                plan.add(new Potato(assetManager));
+                plan.add(new Potato());
             } else if (curCard.getTyp() == 3) {
-                plan.add(new SunFlower(assetManager));
+                plan.add(new SunFlower());
 
             } else if (curCard.getTyp() == 4) {
-                plan.add(new Frozzen_plant(assetManager));
+                plan.add(new Frozzen_plant());
 
             } else if (curCard.getTyp() == 5) {
-                plan.add(new Bomb(assetManager));
+                plan.add(new Bomb());
                 hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());
                 plan.getLast().getControl().addListener(this);
             } else if (curCard.getTyp() == 6) {
-                plan.add(new Jumper(assetManager));
+                plan.add(new Jumper());
                 hashingPlantcontrol.put(plan.getLast().getControl(), plan.getLast());
                 plan.getLast().getControl().addListener(this);
             }
@@ -530,7 +526,8 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
     @Override
     public void collision(PhysicsCollisionEvent event) {
-
+        
+        
         if ((event.getNodeA().getName().equals("zombie") && event.getNodeB().getName().equals("bullet")) || (event.getNodeB().getName().equals("zombie") && event.getNodeA().getName().equals("bullet"))) {
             Bullet B;
             Zombie z;
@@ -641,7 +638,6 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
     }
 
     private void changeCameraPosition() {
-        System.out.println("mygame.level.changeCameraPosition()");
         camera.setLocation(cameraCardsPositions[cameraStatus][0]);
         camera.setRotation(cameraRotation[cameraStatus]);
 
@@ -686,7 +682,7 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         Material mat2 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setTexture("ColorMap", assetManager.loadTexture("photos/Floor2.jpg"));
-      
+
         //Material mat2 = assetManager.loadMaterial("Materials/road_mat.j3m");
         Box floorBox2 = new Box(100, 0.25f, 18);
         Geometry floorGeometry2 = new Geometry("Floor2", floorBox2);

@@ -18,8 +18,8 @@ import mygame.allObjects.Bullet;
 public abstract class Defenders extends plant{
     
    
-      public Defenders(AssetManager asset) {
-        super(asset);
+      public Defenders() {
+        super();
     }
       
      public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {

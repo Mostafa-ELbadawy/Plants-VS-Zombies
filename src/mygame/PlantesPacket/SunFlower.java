@@ -22,26 +22,19 @@ import mygame.allObjects.Bullet;
  */
 public class SunFlower extends Attackers {
 
-    public SunFlower(AssetManager asset) {
-        super(asset);
+    private static Node model;
 
-        Node node = (Node) assetManager.loadModel("Blender/sun_flower/sun_flower.j3o");
+    public SunFlower() {
+        super();
+
+        Node node = (Node) model.clone();
         this.node = node;
-        this.node.setName("plant");
-        node.setLocalScale(3f);
         name = "plant";
         Node zomb = (Node) node.getChild(name);
         control = zomb.getControl(AnimControl.class);
         channal = control.createChannel();
 
-        phyControl = new RigidBodyControl(0);
-
-        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-
-        this.node.addControl(phyControl);
-        this.node.rotate(0, (float) Math.PI, 0);
+        phyControl = node.getControl(RigidBodyControl.class);
 
         attackPower = 25;
         attackSpeed = 15;
@@ -68,6 +61,22 @@ public class SunFlower extends Attackers {
     @Override
     public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
         attack(timeNow, space, hashing);
+    }
+
+    public static void loadmodle(AssetManager asset) {
+
+        assetManager = asset;
+        model = (Node) assetManager.loadModel("Blender/sun_flower/sun_flower.j3o");
+
+        RigidBodyControl phyControl = new RigidBodyControl(0);
+        phyControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
+        phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
+        model.addControl(phyControl);
+        model.setName("plant");
+        model.setLocalScale(3f);
+        model.rotate(0, (float) Math.PI, 0);
+
     }
 
 }
