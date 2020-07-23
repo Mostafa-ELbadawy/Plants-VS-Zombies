@@ -21,14 +21,14 @@ public class Zombie01 extends Zombie {
         this.node = node;
 
 
-        node = (Node) node.getChild("zombie2");
-        control = node.getControl(AnimControl.class);
-        channal = control.createChannel();
         phyControl = new RigidBodyControl(0);
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         node.addControl(phyControl);
         phyControl.activate();
+        node = (Node) node.getChild("zombie2");
+        control = node.getControl(AnimControl.class);
+        channal = control.createChannel();
 
         health = 100;
         attackPower = 30;

@@ -28,15 +28,15 @@ public class Zombie02 extends Zombie {
         this.node = node;
         name = "zombie";
 
-        node = (Node) node.getChild("zombie2");
-        control = node.getControl(AnimControl.class);
-        channal = control.createChannel();
 
         phyControl = new RigidBodyControl(0);
         phyControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         phyControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
         node.addControl(phyControl);
         phyControl.activate();
+        node = (Node) node.getChild("zombie2");
+        control = node.getControl(AnimControl.class);
+        channal = control.createChannel();
 
         health = 170;
         attackPower = 25;
