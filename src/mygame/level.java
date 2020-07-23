@@ -389,13 +389,13 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
 
         int row = FastMath.nextRandomInt(0, 4);
         if (typ == 1) {
-            zomb.add(new Zombie04());
-        } else if (typ == 2) {
-            zomb.add(new Zombie02());
-        } else if (typ == 3) {
             zomb.add(new Zombie03());
-        } else if (typ == 4) {
+        } else if (typ == 2) {
             zomb.add(new Zombie01());
+        } else if (typ == 3) {
+            zomb.add(new Zombie02());
+        } else if (typ == 4) {
+            zomb.add(new Zombie04());
         }
 
         zomb.getLast().setRow(row);
