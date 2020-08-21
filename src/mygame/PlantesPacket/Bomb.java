@@ -29,8 +29,8 @@ private static Node model;
 
         
         name = "plant";
-        Node zomb = (Node) node.getChild(name);
-        control = zomb.getControl(AnimControl.class);
+        Node child = (Node) node.getChild(name);
+        control = child.getControl(AnimControl.class);
         channal = control.createChannel();
          phyControl = node.getControl(RigidBodyControl.class);
 

@@ -31,7 +31,7 @@ public abstract class Attackers extends plant {
 
     }
 
-   
+    @Override
     public void setstatus(float tpf, float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) {
 
         CollisionResults results = new CollisionResults();
@@ -57,6 +57,10 @@ public abstract class Attackers extends plant {
 
     }
 
+    public abstract void attack(float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing);
+    
+    
+    
     public float getLastAttack() {
         return lastAttack;
     }
@@ -65,7 +69,7 @@ public abstract class Attackers extends plant {
         this.lastAttack = lastAttack;
     }
 
-    public abstract void attack(float timeNow, PhysicsSpace space, HashMap<Geometry, Bullet> hashing) ;
+
     public float getAttackPower() {
         return attackPower;
     }

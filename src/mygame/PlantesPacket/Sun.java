@@ -33,7 +33,7 @@ public class Sun {
     private static Node lvl;
     private static PhysicsSpace space;
     private static HashMap<Geometry, Sun> hashingSun;
-
+    
     public Sun() {
         this(25);
     }
@@ -85,14 +85,14 @@ public class Sun {
         this.phyControl = phyControl;
     }
 
-    public static void addSun(Vector3f v) {
+    public static void addSun(Vector3f pos) {
 
         sunsVector.add(new Sun());
         Sun newsun = sunsVector.getLast();
         lvl.attachChild(newsun.getNode());
         space.add(newsun.getNode());
         newsun.getPhyControl().setEnabled(false);
-        newsun.getNode().setLocalTranslation(v);
+        newsun.getNode().setLocalTranslation(pos);
         hashingSun.put(newsun.getNode(), newsun);
         newsun.getPhyControl().setEnabled(true);
 

@@ -234,6 +234,10 @@ public class level extends AbstractAppState implements PhysicsCollisionListener,
             cardsNode.attachChild(cardsVector.get(i).getNode());
         }
 
+        /***************************************************************************/
+        
+        
+        
     }
 
     

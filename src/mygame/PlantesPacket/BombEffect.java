@@ -22,7 +22,6 @@ import com.jme3.scene.Node;
 public class BombEffect {
 
     protected final AssetManager assetManager;
-
     private float lastupdate=0;
     private int state = 0;
 

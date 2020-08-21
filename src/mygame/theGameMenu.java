@@ -49,7 +49,7 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
     }
 
     int GetLevel() {
-        int level = 1;
+       
         Scanner input;
         try {
             input = new Scanner(new FileInputStream("assets/files/level.txt"));
@@ -60,18 +60,10 @@ public class theGameMenu extends AbstractAppState implements ScreenController {
 
     }
 
-    private void sleep(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            System.out.println("sleep error");
-        }
-    }
 
     public void StartGame() {
 
        
-        System.out.println("done" + GetLevel());
         ((AudioNode) app.getRootNode().getChild("sound")).stop();
         app.getRootNode().detachChildNamed("sound");
         app.getStateManager().attach(new level(app, GetLevel()));

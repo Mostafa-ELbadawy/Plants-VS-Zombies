@@ -5,7 +5,6 @@
  */
 package mygame.PlantesPacket;
 
-import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.Geometry;
 import java.util.HashMap;

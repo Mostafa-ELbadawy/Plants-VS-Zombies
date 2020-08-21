@@ -34,9 +34,9 @@ public class Jumper extends Attackers {
         this.node = node;
 
         name = "plant";
-        Node zomb = (Node) node.getChild(name);
+        Node child = (Node) node.getChild(name);
 
-        control = zomb.getControl(AnimControl.class);
+        control = child.getControl(AnimControl.class);
         channal = control.createChannel();
 
         phyControl = node.getControl(RigidBodyControl.class);

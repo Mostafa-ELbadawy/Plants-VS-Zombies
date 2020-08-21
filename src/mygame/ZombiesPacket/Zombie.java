@@ -113,7 +113,7 @@ public abstract class Zombie {
         if (this instanceof Zombie04)
             speed-=poisonEffect;
         
-        node.move(speed * tpf, 0, 0);
+       node.move(speed * tpf, 0, 0);
         phyControl.setEnabled(true);
 
     }

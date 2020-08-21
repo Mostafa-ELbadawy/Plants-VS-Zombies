@@ -29,23 +29,23 @@ public class Bullet {
     
     
 
-    public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f v, float speed) {
+    public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f pos, float speed) {
      
         this.power=power;
         this.speed=speed;
         this.effect=effect;
         this.effectTime=effectTime;
         
-        createBall(root, space, mat, v);
+        createBall(root, space, mat, pos);
        
     }
     
-    public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f v) {
-         this(effect,power,effectTime, root, space, mat, v, 13);
+    public Bullet(float effect,float power,float effectTime,Node root,PhysicsSpace space, Material mat, Vector3f pos) {
+         this(effect,power,effectTime, root, space, mat, pos, 13);
     
     }
     
-    private void createBall(Node root,PhysicsSpace space, Material mat, Vector3f v)
+    private void createBall(Node root,PhysicsSpace space, Material mat, Vector3f pos)
     {
             Sphere bullet = new Sphere(32, 32, 1f, true, false);
             bullet.setTextureMode(Sphere.TextureMode.Projected);
@@ -53,13 +53,12 @@ public class Bullet {
             node=bulletg;
             bulletg.setMaterial(mat);
             bulletg.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-            bulletg.setLocalTranslation(v);
+            bulletg.setLocalTranslation(pos);
             RigidBodyControl bulletControl = new RigidBodyControl(2);
-            //bulletControl.removeCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_02);
-
+         
             bulletControl.setCollisionGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
             bulletControl.addCollideWithGroup(PhysicsCollisionObject.COLLISION_GROUP_01);
-            
+           
             bulletg.addControl(bulletControl);
             bulletControl.setLinearVelocity(new Vector3f(speed,0, 0));
              root.attachChild(node);
